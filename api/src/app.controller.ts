@@ -7,14 +7,14 @@ export class AppController{
     constructor(private appFileSystemService: AppFileSystemService) {}
 
     @Get ('/diskPart')
-    getDiskList() {
-        return this.appFileSystemService.getDisckPart()
+    getDiskPart() {
+        return this.appFileSystemService.getDiskPart()
     };
 
-    @Get('/DirList')
+    @Get('/dirList')
     getDirList(@Query() query) {
         if (!query['path']) return {err: 1, message: 'path is null'}
-        return this.appFileSystemService.getDirList(query['path']);
+        return this.appFileSystemService.getDirList(query['path'])
     }
 
 
