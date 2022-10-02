@@ -1,20 +1,20 @@
 import {Controller, Get, Query} from "@nestjs/common";
-import {AppDiskService} from "./services/app.diskService";
-import {AppNavigateService} from "./services/app.navigateService";
+import {AppFileSystemService} from "./services/app.fileSystemService";
 
 
 @Controller('/api')
 export class AppController{
-    constructor(private diskService: AppDiskService,private appService: AppNavigateService) {}
+    constructor(private appFileSystemService: AppFileSystemService) {}
 
-    @Get ('/diskList')
+    @Get ('/diskPart')
     getDiskList() {
-        return this.diskService.getDiskList()
+        return this.appFileSystemService.getDisckPart()
     };
 
     @Get('/DirList')
     getDirList(@Query() query) {
-        return this.appService.getDirList(query)
+        if (!query['path']) return {err: 1, message: 'path is null'}
+        return this.appFileSystemService.getDirList(query['path']);
     }
 
 

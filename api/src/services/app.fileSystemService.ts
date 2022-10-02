@@ -30,32 +30,60 @@ export interface FolderModel extends BaseModel<EtypeItem.folder> {}
  * я тебе описал по интерфейсам что тебе надо сделать, как это обернуть решай уже сам
  */
 @Injectable()
-export class AppNavigateService {
+export class AppFileSystemService {
   /***
    * @param targetPath - путь по котрому надо получить информацию
    */
   getDirList(targetPath: string): Array<FileModel | FolderModel> {
-    if (!query["path"]) return [{ err: 1 }];
-    const dir = path.win32.normalize(query["path"]);
+    const dir = path.win32.normalize(targetPath);
     console.log(`Dir = ${dir}`);
-    const files_ = [0];
+    const files_ = [];
     let files = [];
     try {
       files = fs.readdirSync(dir);
     } catch (err) {
-      return [{ err: 1 }];
+      return;
     }
 
     for (let i in files) {
       let file = dir + path.sep + files[i];
       let name = files[i];
+      let date=0;
+      //TODO: дата
       if (fs.statSync(file).isDirectory()) {
-        name = name + targetPath.sep;
+        name = name + dir.sep;
+        //TODO: тип folder
+        files_.push({name:name,date:date,T:"folder"});
+      } else {
+        let size=0;
+        //TODO: size
+        files_.push({name:name,date:date,size:size,T:"file"});
       }
-      files_.push(name);
+
     }
 
-    return JSON.stringify(files_);
+    return files_;
+  }
+
+  getDisckPart() {
+    const childProcess = require('child_process');
+    function getLocalDiskNames() {
+      const buffer = childProcess.execSync('wmic logicaldisk get Caption  /format:list').toString();
+      const lines = buffer.split('\r\r\n');
+
+      const disks = [];
+
+      for (const line of lines) {
+        if(!line) {
+          continue;
+        }
+        const lineData = line.split('=');
+        disks.push(lineData[1]);
+      }
+
+      return disks;
+    }
+    return getLocalDiskNames()
   }
 
   // var getFiles = function (dir, files_){
