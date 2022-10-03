@@ -1,13 +1,16 @@
 <template>
-<div class="forDraft element inLine">
+<div class="element inLine">
   {{fileData.name}}
   {{fileData.size}}
   {{fileData.date}}
 </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import {defineComponent} from "vue";
+
+
+export default defineComponent({
   name: "Element",
   props: {
     fileData: {
@@ -15,12 +18,11 @@ export default {
     }
 
   }
-}
+})
 </script>
 
 <style scoped>
 .element{
-  width: calc(100% - 10px);
   height: 20px;
   margin:auto;
 }

@@ -1,5 +1,5 @@
 <template>
-<div class="forDraft panelBar">
+<div class="panelBar">
   <select>
     <option>c:</option>
   </select>
@@ -7,10 +7,13 @@
 </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import {defineComponent} from "vue";
+
+
+export default defineComponent({
   name: "PanelBar"
-}
+})
 </script>
 
 <style scoped>

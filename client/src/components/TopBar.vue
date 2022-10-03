@@ -1,19 +1,18 @@
 <template>
-<div class="topBar forDraft ">
-  <button style="width: 60px;height: 60px; float:left; margin-left: 10px;"> Settings</button>
+<div>
+  <button class="button"> Settings</button>
 </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import {defineComponent} from "vue";
+
+
+export default defineComponent({
   name: "TopBar"
-}
+})
 </script>
 
 <style scoped>
-  .topBar{
-    width:70%;
-    margin:auto;
-    height: 60px;
-  }
+
 </style>

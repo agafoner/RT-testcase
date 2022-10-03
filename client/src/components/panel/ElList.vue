@@ -1,15 +1,15 @@
 <template>
-<div class="forDraft elList">
+<div class="el-List">
   <FileElement v-for="file in files" :fileData="file"></FileElement>
 </div>
 </template>
 
-<script>
-
-
+<script lang="ts">
 import FileElement from "@/components/panel/FileElement";
+import {defineComponent} from "vue";
 
-export default {
+
+export default defineComponent({
   name: "ElList",
   components: {FileElement},
   data() {
@@ -20,11 +20,12 @@ export default {
         {name:'file3.jpg', size:1211, date:11121}]
     }
   }
-}
+})
 </script>
 
 <style scoped>
-.elList {
-  height: calc(100% - 35px);
+.el-List {
+  padding: 10px;
+  flex-grow: 1;
 }
 </style>

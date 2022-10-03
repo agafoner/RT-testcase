@@ -1,21 +1,20 @@
 <template>
-<div>
-  <TopBar></TopBar>
-  <div class="panelDiv">
-    <Panel v-for="panel in panels" > </Panel>
+  <TopBar class="bar"></TopBar>
+  <div class="panel-div">
+    <Panel v-for="panel in panels" :panelId=panel> </Panel>
   </div>
-  <BottomBar></BottomBar>
-</div>
+  <BottomBar class="bar"></BottomBar>
 </template>
 
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component';
 import TopBar from './components/TopBar.vue';
 import Panel from './components/Panel.vue';
 import BottomBar from './components/BottomBar.vue';
+import {defineComponent} from "vue";
 
 
-@Options({
+export default defineComponent ({
+  name: "App",
   components: {
     TopBar,Panel,BottomBar
   },
@@ -25,7 +24,7 @@ import BottomBar from './components/BottomBar.vue';
     }
   }
 })
-export default class App extends Vue {}
+// export default class App extends Vue {}
 </script>
 
 <style lang="scss">
@@ -35,10 +34,16 @@ export default class App extends Vue {}
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
-}
-.panelDiv {
+  margin-top: 2.5vh;
+  height: 95vh;
   display: flex;
+  flex-direction: column;
+
+  //justify-content: space-around;
+}
+.panel-div {
+  display: flex;
+  flex-grow: 1;
   flex-wrap: wrap;
   justify-content: center;
   align-items: stretch;
@@ -56,5 +61,18 @@ div {
   justify-content: center;
   align-items: stretch;
   align-content: center;
+}
+.bar{
+  width:70%;
+  margin:auto;
+  height: 60px;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+}
+.button {
+  width: 80px;
+  height: 40px;
+  margin-left: 60px;
 }
 </style>

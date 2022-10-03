@@ -7,10 +7,13 @@
 
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import {defineComponent} from "vue";
+
+
+export default defineComponent({
   name: "BottomBar"
-}
+})
 </script>
 
 <style scoped>
@@ -18,9 +21,5 @@ export default {
   width:70%;
   margin:auto;
   height: 60px;
-}
-.button {
-  height: 60px;
-  width: 100px;
 }
 </style>
