@@ -8,8 +8,8 @@
 </template>
 
 <script lang="ts">
-import ElList from "@/components/panel/ElList";
-import PanelBar from "@/components/panel/PanelBar";
+import ElList from "@/components/panel/ElList.vue";
+import PanelBar from "@/components/panel/PanelBar.vue";
 import {defineComponent} from "vue";
 
 

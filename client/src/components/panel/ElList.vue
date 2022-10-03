@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import FileElement from "@/components/panel/FileElement";
+import FileElement from "@/components/panel/FileElement.vue";
 import {defineComponent} from "vue";
 
 
