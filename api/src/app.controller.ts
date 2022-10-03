@@ -13,7 +13,6 @@ export class AppController{
 
     @Get('/dirList')
     getDirList(@Query() query) {
-        if (!query['path']) return {err: 1, message: 'path is null'}
         return this.appFileSystemService.getDirList(query['path'])
     }
 

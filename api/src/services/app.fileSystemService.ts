@@ -26,8 +26,9 @@ export class AppFileSystemService {
   getDirList(targetPath: string): Array<FileModel | FolderModel> {
     const dir = path.win32.normalize(targetPath);
     console.log(`Dir = ${dir}`);
-    const files_ = [];
+    // const files_ = [];
     let files = [];
+    let files_ = [];
     try {
       files = fs.readdirSync(dir);
     } catch (err) {return}
@@ -35,36 +36,38 @@ export class AppFileSystemService {
     for (let i in files) {
       let file = dir + path.sep + files[i];
       let name = files[i];
-      let date=0;
+      let date =0;
       let stat=fs.statSync(file)
 
       date=stat.ctime;
       if (stat.isDirectory()) {
         name = name + dir.sep;
-        files_.push({name:name,date:date,T:"folder"});
+        files_.push({name:name,date:date,type:"folder"});
       } else {
         let size=stat.size | 0;
-        files_.push({name:name,date:date,size:size,T:"file"});
+        files_.push({name:<String> name  ,date:date,size:<Number>size,type:"file"});
       }
 
     }
+    // files_=files.map((file)=>{
+    //   let filePath = dir + path.sep + file
+    //   let name = file
+    //   let stat = fs.statSync(filePath)
+    //   let date = stat.ctime
+    //   if (stat.isDirectory()) {
+    //     name = name + dir.sep
+    //     return {name: name, date: date, type: "folder"}
+    //   } else {
+    //     let size = stat.size | 0;
+    //     return {name: <String>name, date: <Date>date, size: <Number>size, type: "file"}
+    //   }
+    // })
 
     return files_;
   }
 
   getDiskPart() {
       const buffer = childProcess.execSync('wmic logicaldisk get Caption  /format:list').toString();
-      const lines = buffer.split('\r\r\n');
-      const disks = [];
-
-      for (const line of lines) {
-        if(!line) {
-          continue;
-        }
-        const lineData = line.split('=');
-        disks.push(lineData[1]);
-      }
-
-      return disks;
+      return buffer.split('\r\r\n').filter((e)=>e!='').map((e)=>e.split('=')).map((e)=> e[1])
   }
 }
