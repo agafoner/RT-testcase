@@ -1,7 +1,7 @@
 <template>
 <div class="panelBar">
   <select>
-    <option>c:</option>
+    <option v-for="partition in store.state.getDiskPart()">{{partition}}</option>
   </select>
   <label>C://Windows</label>
 </div>
@@ -10,9 +10,10 @@
 <script lang="ts">
 import {defineComponent} from "vue";
 
-
 export default defineComponent({
-  name: "PanelBar"
+  name: "PanelBar",
+  inject: ["store"],
+
 })
 </script>
 
