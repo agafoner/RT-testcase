@@ -1,10 +1,9 @@
 import {Module} from "@nestjs/common";
 import {AppController} from "./app.controller";
-import {AppDiskService} from "./services/app.diskService";
-import {AppNavigateService} from "./services/app.navigateService";
+import {AppFileSystemService} from "./services/app.fileSystemService";
 
 @Module({
     controllers:[AppController],
-    providers: [AppDiskService,AppNavigateService]
+    providers: [AppFileSystemService]
 })
 export class AppModule {}
