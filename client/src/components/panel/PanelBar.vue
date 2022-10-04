@@ -14,7 +14,7 @@ import app from "@/App.vue";
 export default defineComponent({
   name: "PanelBar",
   mounted() {
-    this.$store.state.getDiskPart();  //TODO: вот здесь ошибка
+    this.$store.state.fetchDiskPart();
 
   }
 

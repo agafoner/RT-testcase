@@ -21,7 +21,7 @@ export interface FolderModel extends BaseModel<EtypeItem.folder> {}
 @Injectable()
 export class AppFileSystemService {
   getDirList(targetPath: string): Array<FileModel | FolderModel> {
-    const dir = path.win32.normalize(targetPath);
+    const dir = path.win32.normalize(targetPath || 'C:/');
     let files = [];
     let files_ = [];
 
