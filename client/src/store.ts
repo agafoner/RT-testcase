@@ -1,11 +1,15 @@
 import { reactive } from 'vue'
 import axios from "axios";
+import {FileModel,FolderModel} from './main'
+
 
 interface Store {
-    api: {dirList: string, diskPart: string},
+    endPoint: {dirList: string, diskPart: string},
+    dirList: Array<FileModel | FolderModel>[],
     panels: number[],
     diskPart: string[],
-    fetchDiskPart(): void
+    fetchDiskPart(): void,
+    fetchDirList(dir: string, panel: number): void
 
 }
 const api=axios.create({
@@ -15,18 +19,23 @@ const api=axios.create({
 
 
  export const state = reactive<Store>({
-     api: {
+     endPoint: {
          dirList: 'dirList',
          diskPart: 'diskPart'
 
      },
+     dirList: [],
     panels: [0,1] ,
     diskPart: [],
      fetchDiskPart() {
-         console.log('axios started')
          api
-             .get(state.api.diskPart)
-             .then(response => (state.diskPart=response.data)).catch(e=>(console.log('Error apiGetDiskPart'+e)))
+             .get(state.endPoint.diskPart)
+             .then(response => (state.diskPart=response.data)).catch(e=>(console.log('Error fetchDiskPart'+e)))
+     },
+     fetchDirList(dir: string, panel: number) {
+         api
+             .get(state.endPoint.diskPart+'?path=')
+             .then(response => (state.dirList[panel]=response.data)).catch(e=>(console.log('Error fetchDirList'+e)))
      }
  })
 
