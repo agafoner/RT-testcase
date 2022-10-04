@@ -7,11 +7,11 @@ interface Store {
 
 }
 
- export  const state = reactive<Store>({
+ export const state = reactive<Store>({
     panels: [0,1] ,
     diskPart: [],
     getDiskPart() { // TODO: Взятие списка дисков с api через axios
-        return ['C:','D:','E:']
+        return this.diskPart=['C:','D:','E:']
     }
 })
 

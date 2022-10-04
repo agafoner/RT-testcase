@@ -4,5 +4,6 @@ import store from './store'
 
 
 const app = createApp(App)
-app.provide("store", store)
+// app.provide("store", store)
+app.config.globalProperties.$store=store
 app.mount('#app')
