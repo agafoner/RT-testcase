@@ -13,9 +13,7 @@ import {defineComponent} from "vue";
 export default defineComponent({
   name: "Element",
   props: {
-    fileData: {
-      type: Array
-    }
+    fileData: {}
 
   }
 })

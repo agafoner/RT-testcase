@@ -1,7 +1,7 @@
 <template>
   <TopBar class="bar"></TopBar>
   <div class="panel-div">
-    <Panel v-for="panel in panels" :panelId=panel> </Panel>
+    <Panel v-for="panel in panels" :panelId=panel > </Panel>
   </div>
   <BottomBar class="bar"></BottomBar>
 </template>
@@ -22,6 +22,9 @@ export default defineComponent ({
     return {
       panels: [0,1]
     }
+  },
+  mounted () {
+
   }
 })
 // export default class App extends Vue {}
