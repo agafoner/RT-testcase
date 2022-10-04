@@ -39,10 +39,10 @@ export class AppFileSystemService {
       let date = stat.ctime
       if (stat.isDirectory()) {
         name = name + path.sep
-        return {name: name, date: date, type: "folder"}
+        return <FileModel | FolderModel> {name: name, lastDateChange: date, type: "folder"}
       } else {
         let size = stat.size | 0;
-        return {name: <String>name, date: <Date>date, size: <Number>size, type: "file"}
+        return <FileModel | FolderModel> {name: name, lastDateChange:date, size: size, type: "file"}
       }
     })
 
