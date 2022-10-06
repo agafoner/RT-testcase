@@ -1,8 +1,9 @@
 <template>
 <div class="panel">
-  <PanelBar>
-  </PanelBar>
-  <ElList>
+  <PanelBar :panelId="panelId">
+  </PanelBar >
+<!--  <ElList v-if="$store.state.dirList[this.panelId]!=={}" :dirList="$store.state.dirList[this.panelId]">-->
+  <ElList  :dirList="$store.state.dirList[this.panelId]">
   </ElList>
 </div>
 </template>
@@ -16,7 +17,10 @@ import {defineComponent} from "vue";
 export default defineComponent({
   name: "Panel",
   components: {PanelBar,ElList},
-  props:[ 'panelId' ]
+  props:[ 'panelId' ],
+  mounted() {
+       this.$store.state.fetchDirList('C:/',this.panelId)
+  }
 
 })
 </script>

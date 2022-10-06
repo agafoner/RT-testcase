@@ -32,6 +32,7 @@ export class AppFileSystemService {
         return <FileModel | FolderModel> {name: name, lastDateChange:date, size: size, type: "file"}
       }
     })
+        .filter((file)=>(file!=null))
 
     return files_;
   }

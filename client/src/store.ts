@@ -5,6 +5,7 @@ import {FileModel,FolderModel} from './main'
 
 interface Store {
     endPoint: {dirList: string, diskPart: string},
+    currentDir:Array<String>,
     dirList: Array<FileModel | FolderModel>[],
     panels: number[],
     diskPart: string[],
@@ -19,6 +20,7 @@ const api=axios.create({
 
 
  export const state = reactive<Store>({
+     currentDir: [],
      endPoint: {
          dirList: 'dirList',
          diskPart: 'diskPart'
@@ -34,9 +36,11 @@ const api=axios.create({
      },
      fetchDirList(dir: string, panel: number) {
          api
-             .get(state.endPoint.diskPart+'?path=')
-             .then(response => (state.dirList[panel]=response.data)).catch(e=>(console.log('Error fetchDirList'+e)))
+             .get(state.endPoint.dirList+'?path='+dir)
+             .then(response => {state.dirList[panel]=response.data; }).catch(e=>(console.log('Error fetchDirList'+e)))
+         state.currentDir[panel]=dir;
      }
+
  })
 
 
