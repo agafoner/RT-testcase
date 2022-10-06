@@ -3,7 +3,7 @@
   <select v-model="selectedDisk" @change="selectDisk(selectedDisk)" >
     <option v-for="partition in $store.state.diskPart" >{{partition}}</option>
   </select>
-  <label>{{ $store.state.currentDir[panelId] }}</label>
+  <label>{{ pathNormalized }}</label>
 </div>
 </template>
 
@@ -13,6 +13,12 @@ import {defineComponent} from "vue";
 export default defineComponent({
   name: "PanelBar",
   props:[ 'panelId' ],
+  computed: {
+    pathNormalized (): String {
+      if (!this.$store.state.currentDir[this.$props.panelId]) return '-'
+      return this.$store.state.currentDir[this.$props.panelId].replaceAll('\\','/')
+    }
+  },
   data() {
     return {
       selectedDisk: 'C:'
@@ -27,7 +33,8 @@ export default defineComponent({
       this.$store.state.fetchDirList(partition+'/',this.$props.panelId);
 
     }
-  }
+  },
+
 
 
 })

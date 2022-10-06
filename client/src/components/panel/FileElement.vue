@@ -1,5 +1,5 @@
 <template>
-<div class="element inLine">
+<div class="element inLine" @dblclick="$emit('chDir',row.name, row.type)">
   <div class="element-icon">
     --
   </div>
@@ -21,7 +21,10 @@ import {defineComponent} from "vue";
 
 export default defineComponent({
   name: "Element",
-  props: ['row']
+  props: ['row'],
+  methods: {
+
+  }
 })
 </script>
 

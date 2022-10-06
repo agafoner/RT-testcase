@@ -3,7 +3,7 @@
   <PanelBar :panelId="panelId">
   </PanelBar >
 <!--  <ElList v-if="$store.state.dirList[this.panelId]!=={}" :dirList="$store.state.dirList[this.panelId]">-->
-  <ElList  :dirList="$store.state.dirList[this.panelId]">
+  <ElList  :dirList="$store.state.dirList[this.panelId]" :panelId="this.panelId">
   </ElList>
 </div>
 </template>
