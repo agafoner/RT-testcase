@@ -1,7 +1,7 @@
 <template>
 <div class="el-List" >
 
-  <FileElement v-for="row in $props.dirList" v-if="$props.dirList!==null" :row="row" @chDir="chDir"></FileElement>
+  <FileElement v-for="row in $props.dirList" v-if="!!$props.dirList" :row="row" @chDir="chDir"></FileElement>
 </div>
 </template>
 <script lang="ts">

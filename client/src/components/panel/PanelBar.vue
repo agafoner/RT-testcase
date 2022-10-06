@@ -1,6 +1,6 @@
-<template>
-<div class="panelBar inline">
-  <select v-model="selectedDisk" @change="selectDisk(selectedDisk)" >
+<template v-if="!!this.$store.state.currentDir[panelId]">
+<div class="panel-bar inline">
+  <select v-model="selectedDisk" @change="selectDisk(selectedDisk)" > <!-- Не могу сообразить, как сделать, чтобы при монтировании в select'e нужный диск. Пробовал вотчером и через computed - получается лабуда. -->
     <option v-for="partition in $store.state.diskPart" >{{partition}}</option>
   </select>
   <label>{{ pathNormalized }}</label>
@@ -17,11 +17,14 @@ export default defineComponent({
     pathNormalized (): String {
       if (!this.$store.state.currentDir[this.$props.panelId]) return '-'
       return this.$store.state.currentDir[this.$props.panelId].replaceAll('\\','/')
-    }
+    },
+    // selectedDisk: function () {
+    //   return this.$store.state.diskPart[0];
+    // }
   },
   data() {
     return {
-      selectedDisk: 'C:'
+      selectedDisk: '',
     }
   },
   mounted() {
@@ -29,7 +32,7 @@ export default defineComponent({
   },
   methods: {
     selectDisk: function (partition: string) {
-      console.log("selectDisk")
+      this.selectedDisk=partition;
       this.$store.state.fetchDirList(partition+'/',this.$props.panelId);
 
     }
@@ -41,7 +44,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.panelBar{
+.panel-bar{
   display: flex;
   height: 30px;
 }

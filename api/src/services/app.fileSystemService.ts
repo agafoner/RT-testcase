@@ -10,13 +10,12 @@ export class AppFileSystemService {
   getDirList(targetPath: string): Array<FileModel | FolderModel> {
     const dir = path.win32.normalize(targetPath || 'C:/');
     let files = [];
-    let files_ = [];
 
     try {
       files = fs.readdirSync(dir);
     } catch {return}
 
-    files_=files.map((file)=>{
+    return files.map((file)=>{
       let filePath = dir + path.sep + file
       let name = file
       let stat
@@ -26,15 +25,13 @@ export class AppFileSystemService {
       let date = stat.ctime
       if (stat.isDirectory()) {
         name = name + path.sep
-        return <FileModel | FolderModel> {name: name, lastDateChange: date, type: "folder"}
+        return <FolderModel> {name: name, lastDateChange: date, type: "folder"}
       } else {
         let size = stat.size | 0;
-        return <FileModel | FolderModel> {name: name, lastDateChange:date, size: size, type: "file"}
+        return <FileModel> {name: name, lastDateChange:date, size: size, type: "file"}
       }
     })
         .filter((file)=>(file!=null))
-
-    return files_;
   }
 
   getDiskPart() {
