@@ -1,9 +1,9 @@
 <template>
 <div class="el-List" >
-  <div v-if="!!upperDir" class="inline" @dblclick="changeDir(upperDir+'/')">
-    {{ upperDir }}
+  <div v-if="!!upperDir" class="inline" @dblclick="changeDir(upperDir)">
+    {{ upperDir.join('/') }}
   </div>
-  <FileElement v-for="row in $props.dirList" v-if="!!$props.dirList" :row="row" @chDir="selectDir"></FileElement>
+  <FileElement v-if="!!$props.dirList" v-for="row in $props.dirList"  :row="row" @chDir="selectDir"></FileElement>
 </div>
 </template>
 <script lang="ts">
@@ -25,26 +25,21 @@ export default defineComponent({
   },
 
   methods: {
-    selectDir: function (name: string, type: string) {
-      if (type!='folder') return
-      const path=this.$store.state.currentDir[this.$props.panelId]+name
-      this.changeDir(path)
+    selectDir: function (name: string, clickedObjType: string) {
+      if (clickedObjType!=='folder') return
+      this.$store.state.fetchDirList(name,this.$props.panelId)
     },
-    changeDir: function (dir: string) {
-      this.$store.state.fetchDirList(dir,this.$props.panelId)
+    changeDir: function (dir: string[]) {
+      console.log('ChangeDir',dir)
+      this.$store.state.fetchDirList(dir[dir.length-1],this.$props.panelId)
     }
   },
   computed: {
-      upperDir () : string | boolean {
-        console.log('upperDir')
-        const str=this.$store.state.currentDir[this.$props.panelId]
+      upperDir () : string[] | boolean {
+        let str =this.$store.state.currentDir[this.$props.panelId]
         if (!str) return false
-        let arr=str.replaceAll('\\','/').split('/')
-        arr.pop()
-        console.log(arr)
-        if (str.length<=1) return false
-        arr.pop()
-        return arr.join('/');
+        str.pop();
+        return str
       }
   }
 

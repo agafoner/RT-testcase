@@ -1,40 +1,42 @@
-<template v-if="!!this.$store.state.currentDir[panelId]">
+<template >
 <div class="panel-bar inline">
-  <select v-model="selectedDisk" @change="selectDisk(selectedDisk)" > <!-- Не могу сообразить, как сделать, чтобы при монтировании в select'e нужный диск. Пробовал вотчером и через computed - получается лабуда. -->
+  <select  v-model="selectedDisk" @change="selectDisk($event.target.value)" > <!-- TODO: Не могу сообразить, как сделать, чтобы при монтировании в select'e нужный диск. Пробовал вотчером и через computed - получается лабуда. -->
     <option v-for="partition in $store.state.diskPart" >{{partition}}</option>
   </select>
-  <label>{{ pathNormalized }}</label>
+  <label v-if="!!pathNormalized" >{{$store.state.currentDir[this.panelId]}}</label> <!-- TODO: вот этот компонент не подтягивает данные при запуске. -->
 </div>
 </template>
 
 <script lang="ts">
-import {defineComponent} from "vue";
+import {defineComponent, nextTick} from "vue";
 
 export default defineComponent({
   name: "PanelBar",
   props:[ 'panelId' ],
-  computed: {
-    pathNormalized (): String {
-      if (!this.$store.state.currentDir[this.$props.panelId]) return '-'
-      return this.$store.state.currentDir[this.$props.panelId].replaceAll('\\','/')
-    },
-    // selectedDisk: function () {
-    //   return this.$store.state.diskPart[0];
-    // }
-  },
   data() {
     return {
-      selectedDisk: '',
     }
   },
+  computed: {
+    pathNormalized (): string[] | undefined{
+      if (!!this.$store.state.currentDir[this.panelId])
+        // console.log('pathNormalize d',this.$store.state.currentDir[0],this.$props.panelId)
+        return this.$store.state.currentDir[this.$props.panelId]
+    },
+    selectedDisk (): string | void {
+      if (!!this.$store.state.currentDir[this.$props.panelId])
+      return this.$store.state.currentDir[this.$props.panelId][0]+'/';
+     }
+  },
   mounted() {
-    this.$store.state.fetchDiskPart()
+    this.$store.state.fetchDiskPart(this.panelId)
+    // console.log('Mounted,',this.$store.state.currentDir[this.panelId][0],this.panelId)
+    // this.selectedDisk=this.$store.state.currentDir[this.panelId][0]
   },
   methods: {
     selectDisk: function (partition: string) {
-      this.selectedDisk=partition;
-      this.$store.state.fetchDirList(partition+'/',this.$props.panelId);
-
+      if (!!partition || !!this.$props.panelId)
+      this.$store.state.changeDisk(partition,this.$props.panelId);
     }
   },
 

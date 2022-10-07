@@ -1,4 +1,4 @@
-enum EtypeItem {
+export enum EtypeItem {
     file = "file",
     folder = "folder",
 }

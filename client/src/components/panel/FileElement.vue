@@ -21,6 +21,9 @@ import {defineComponent} from "vue";
 
 export default defineComponent({
   name: "Element",
+  // emits: {
+  //   chDir: null
+  // },
   props: ['row'],
   methods: {
 

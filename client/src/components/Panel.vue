@@ -19,7 +19,7 @@ export default defineComponent({
   components: {PanelBar,ElList},
   props:[ 'panelId' ],
   mounted() {
-       this.$store.state.fetchDirList('C:/',this.panelId)
+       // this.$store.state.fetchDirList('C:/',this.panelId)
   }
 
 })
