@@ -1,6 +1,9 @@
 <template>
   <div class="el-List">
-    <div v-if="panel.state.history.length!==0" class="inline" @dblclick="selectDir(undefined,'folder')">
+    <div v-if="panel.state.history.length!==0"
+         class="inline"
+         @dblclick="selectDir(undefined,'folder')"
+    >
       {{" <= Назад  " + upperPath}}
     </div>
     <FileElement
@@ -37,6 +40,9 @@ export default defineComponent({
       if (clickedObjType !== "folder") return;
       this.panel.changeHistory(folderName);
     },
+    // toggleSelect: function (row: Object) {
+    //   row.isSelected=!row.isSelected;
+    // }
   },
   computed: {
     upperPath(): string{

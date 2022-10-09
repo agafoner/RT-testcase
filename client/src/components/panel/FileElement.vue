@@ -1,5 +1,9 @@
 <template>
-<div class="element inLine" @dblclick="$emit('chDir',normalizedName, row.type)">
+<div class="element inLine"
+     :class="{selected : isSelected}"
+     @dblclick="$emit('chDir',normalizedName, row.type)"
+     @click="toggleSelected"
+>
   <div class="element-icon">
     --
   </div>
@@ -31,6 +35,10 @@ export default defineComponent({
     }
   },
   methods: {
+    toggleSelected(): void {
+      this.row.isSelected=!this.row.isSelected
+      console.log(this.$store.state.panels_new[0].state.files);
+    }
 
   },
   data() {
@@ -41,6 +49,9 @@ export default defineComponent({
     normalizedName(): string {
       return this.row.name.replaceAll('\\','/')
     },
+    isSelected(): boolean{
+      return this.row.isSelected
+    }
   }
 })
 </script>
@@ -55,6 +66,9 @@ div {
   height: 20px;
   margin:auto;
 }
+.selected{
+  background-color: darkgrey;
+}
 .element-icon {
   width: 10%;
 }
@@ -67,4 +81,5 @@ div {
 .element-size {
   width: 15%;
 }
+
 </style>
