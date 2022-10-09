@@ -1,11 +1,10 @@
 <template>
   <div class="el-List">
-    <div v-if="!!upperDir" class="inline" @dblclick="changeDir(upperDir)">
-      {{ upperDir.join("/") }}
+    <div v-if="panel.state.history.length!==0" class="inline" @dblclick="selectDir(undefined,'folder')">
+      {{" <= Назад  " + upperPath}}
     </div>
     <FileElement
-      v-if="!!$props.dirList"
-      v-for="row in $props.dirList"
+      v-for="row in dirList"
       :row="row"
       @chDir="selectDir"
     ></FileElement>
@@ -19,31 +18,31 @@ export default defineComponent({
   name: "ElList",
   components: { FileElement },
   props: {
-    panelId: null,
+    panelId: {
+      type: Number,
+      required: true,
+    },
     dirList: {
       required: true,
     },
   },
-  data() {
-    return {};
-  },
+      data() {
+        return {
+          panel: this.$store.state.panels_new[this.panelId],
+        };
+      },
 
   methods: {
-    selectDir: function (name: string, clickedObjType: string) {
+    selectDir: function (folderName: string, clickedObjType: string) {
       if (clickedObjType !== "folder") return;
-      this.$store.state.fetchDirList(name, this.$props.panelId);
-    },
-    changeDir: function (dir: string[]) {
-      console.log("ChangeDir", dir);
-      this.$store.state.fetchDirList(dir[dir.length - 1], this.$props.panelId);
+      this.panel.changeHistory(folderName);
     },
   },
   computed: {
-    upperDir(): string[] | boolean {
-      let str = this.$store.state.currentDir[this.$props.panelId];
-      if (!str) return false;
-      str.pop();
-      return str;
+    upperPath(): string{
+      let history = this.panel.state.history.slice(0)
+      history.pop()
+      return this.panel.state.selectedStore+history.join('')
     },
   },
 });

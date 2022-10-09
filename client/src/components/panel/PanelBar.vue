@@ -2,22 +2,20 @@
   <div class="panel-bar inline">
     <select
       v-model="panel.state.selectedStore"
-      @change="changePart($event.target.value)"
+      @change="changePartition($event.target.value)"
     >
-      <!-- TODO: Не могу сообразить, как сделать, чтобы при монтировании в select'e нужный диск. Пробовал вотчером и через computed - получается лабуда. -->
       <option v-for="partition in $store.state.diskPart">
         {{ partition }}
       </option>
     </select>
-    <label v-if="!!pathNormalized">{{
-      $store.state.currentDir[panelId]
+    <label >{{
+        pathNormalized
     }}</label>
-    <!-- TODO: вот этот компонент не подтягивает данные при запуске. -->
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick } from "vue";
+import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "PanelBar",
@@ -33,19 +31,14 @@ export default defineComponent({
     };
   },
   computed: {
-    pathNormalized(): string[] | undefined {
-      if (!!this.$store.state.currentDir[this.panelId])
-        // console.log('pathNormalize d',this.$store.state.currentDir[0],this.$props.panelId)
-        return this.$store.state.currentDir[this.$props.panelId];
+    pathNormalized(): string  {
+      return this.panel.state.selectedStore+this.panel.state.history.join('')
     },
   },
   mounted() {
-    // this.$store.state.fetchDiskPart(this.panelId)
-    // console.log('Mounted,',this.$store.state.currentDir[this.panelId][0],this.panelId)
-    // this.selectedDisk=this.$store.state.currentDir[this.panelId][0]
   },
   methods: {
-    changePart(value: string) {
+    changePartition(value: string) {
       this.panel.setSelectedStore(value);
     },
   },

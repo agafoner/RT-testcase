@@ -1,4 +1,4 @@
-import { reactive, ref } from "vue";
+import { reactive } from "vue";
 import axios, { Axios } from "axios";
 import { FileModel, FolderModel } from "./main";
 
@@ -6,8 +6,8 @@ interface IUi {
   isSelected?: boolean;
 }
 
-interface IUiFileModel extends FileModel, IUi {}
-interface IUiFolderModel extends FolderModel, IUi {}
+export interface IUiFileModel extends FileModel, IUi {}
+export interface IUiFolderModel extends FolderModel, IUi {}
 interface IFilesUI extends Array<IUiFileModel | IUiFolderModel> {}
 
 const apiUrls = { dirList: "dirList", diskPart: "diskPart" };
@@ -20,7 +20,7 @@ const api = axios.create({
   },
 });
 
-class PnaleSate {
+class PanelState {
   isActive: boolean = false;
   history: Array<string> = [];
   files: Array<IFilesUI> = [];
@@ -28,14 +28,14 @@ class PnaleSate {
 }
 
 export class PanelModel {
-  state = reactive(new PnaleSate());
+  state = reactive(new PanelState());
 
   constructor(public api: Axios, store: string) {
     this.setSelectedStore(store);
   }
 
   setSelectedStore(store: string) {
-    debugger;
+    // debugger;
     this.state.selectedStore = store;
     if (!store) {
       return;
@@ -49,13 +49,30 @@ export class PanelModel {
       })
       .then((data) => {
         this.state.files = data;
+        this.state.history=[];
       });
+  }
+  changeHistory(path: string) {  // Открывает новую папку
+    if (!!path) {
+      this.state.history.push(path);
+    } else {
+      this.state.history.pop();
+    }
+    console.log(this.state.history)
+    this.api
+    .get<Array<IFilesUI>>(
+        apiUrls.dirList + "?path=" + this.state.selectedStore + this.state.history.join('')
+    )
+        .then((resp)=> {
+      return resp.data;
+    }).then((data)=>{
+      this.state.files=data;
+    })
   }
 }
 
 interface Store {
   endPoint: { dirList: string; diskPart: string };
-  // currentDir:Array<String>,
   currentDir: Array<string[]>;
   dirList: Array<FileModel | FolderModel>[];
   panels: number[];
@@ -100,7 +117,6 @@ export const state = reactive<Store>({
     console.log("state.currentDir[panel]", state.currentDir[panel]);
     if (!this.currentDir[panel]) {
       state.currentDir[panel] = [dir];
-      console.log("TROUBLE");
     } else {
       console.log(state.currentDir[panel]);
       state.currentDir[panel].push(dir);

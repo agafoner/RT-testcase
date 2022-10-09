@@ -1,10 +1,10 @@
 <template>
-<div class="element inLine" @dblclick="$emit('chDir',row.name, row.type)">
+<div class="element inLine" @dblclick="$emit('chDir',normalizedName, row.type)">
   <div class="element-icon">
     --
   </div>
   <div class="element-name">
-    {{row.name}}
+    {{normalizedName}}
   </div>
   <div class="element-date">
     {{row.lastDateChange}}
@@ -24,9 +24,23 @@ export default defineComponent({
   // emits: {
   //   chDir: null
   // },
-  props: ['row'],
+  props: {
+    row: {
+      type: Object,
+      required: true,
+    }
+  },
   methods: {
 
+  },
+  data() {
+    return {
+    }
+  },
+  computed:  {
+    normalizedName(): string {
+      return this.row.name.replaceAll('\\','/')
+    },
   }
 })
 </script>
