@@ -3,7 +3,7 @@ export enum EtypeItem {
     folder = "folder",
 }
 
-interface BaseModel<T extends EtypeItem> {
+export interface BaseModel<T extends EtypeItem> {
     type: T;
     name: string;
     lastDateChange: Date;

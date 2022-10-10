@@ -8,7 +8,7 @@ interface IUi {
 
 export interface IUiFileModel extends FileModel, IUi {}
 export interface IUiFolderModel extends FolderModel, IUi {}
-interface IFilesUI extends Array<IUiFileModel | IUiFolderModel> {}
+export type IFilesUI = IUiFileModel | IUiFolderModel;
 
 const apiUrls = { dirList: "dirList", diskPart: "diskPart" };
 
@@ -49,25 +49,34 @@ export class PanelModel {
       })
       .then((data) => {
         this.state.files = data;
-        this.state.history=[];
+        this.state.history = [];
       });
   }
-  changeHistory(path: string) {  // Открывает новую папку
+  changeHistory(path: string) {
+    // Открывает новую папку
     if (!!path) {
       this.state.history.push(path);
     } else {
       this.state.history.pop();
     }
-    console.log(this.state.history)
+    console.log(this.state.history);
     this.api
-    .get<Array<IFilesUI>>(
-        apiUrls.dirList + "?path=" + this.state.selectedStore + this.state.history.join('')
-    )
-        .then((resp)=> {
-      return resp.data;
-    }).then((data)=>{
-      this.state.files=data;
-    })
+      .get<Array<IFilesUI>>(
+        apiUrls.dirList +
+          "?path=" +
+          this.state.selectedStore +
+          this.state.history.join("")
+      )
+      .then((resp) => {
+        return resp.data;
+      })
+      .then((data) => {
+        this.state.files = data;
+      });
+  }
+
+  toggleSelected(row: IFilesUI): void {
+    row.isSelected = !row.isSelected;
   }
 }
 
