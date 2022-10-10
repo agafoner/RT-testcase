@@ -1,5 +1,5 @@
 <template>
-  <div class="panel">
+  <div class="panel" :class="{'panel-active' : panel.state.isActive}">
     <PanelBar :panelId="panelId"> </PanelBar>
     <ElList :dirList="files" :panelId="panelId"> </ElList>
   </div>
@@ -28,6 +28,9 @@ export default defineComponent({
     files() {
       return this.$store.state.panels_new[this.panelId].state.files;
     },
+    isPanelActive() {
+      return this.panel.state.isActive
+    }
   },
   mounted() { },
   provide() {
@@ -46,5 +49,8 @@ export default defineComponent({
   max-width: 800px;
   display: flex;
   flex-direction: column;
+}
+.panel-active {
+  background: lightgray;
 }
 </style>

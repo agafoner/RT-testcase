@@ -49,9 +49,10 @@ export class PanelModel {
       .then((data) => {
         this.state.files = data;
         this.state.history = [];
+        this.setActivePanel()
       });
   }
-  changeHistory(path: string) {
+  changeDirectory(path: string) {
     // Открывает новую папку
     if (!!path) {
       this.state.history.push(path);
@@ -71,6 +72,7 @@ export class PanelModel {
       })
       .then((data) => {
         this.state.files = data;
+        this.setActivePanel()
       });
   }
   getPrevPath() {
@@ -79,6 +81,11 @@ export class PanelModel {
   }
   toggleSelected(row: IFilesUI): void {
     row.isSelected = !row.isSelected;
+    this.setActivePanel()
+  }
+  setActivePanel() {
+    state.unsetActivePanel()
+    this.state.isActive=true;
   }
 }
 
@@ -94,7 +101,7 @@ interface Store {
   changeDisk(disk: string, panel: number): void;
   init(): void;
   initPanel(index: number): void;
-  unsetActivePanel(panelId: number): void;
+  unsetActivePanel(): void;
 }
 
 export const state = reactive<Store>({
@@ -146,7 +153,7 @@ export const state = reactive<Store>({
   initPanel() {
     this.panels_new.push(reactive(new PanelModel(api, this.diskPart[0])));
   },
-  unsetActivePanel(panelId: number): void {
+  unsetActivePanel(): void {
     this.panels_new.forEach(p=>p.state.isActive=false)
   }
 
