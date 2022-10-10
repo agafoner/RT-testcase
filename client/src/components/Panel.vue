@@ -29,7 +29,12 @@ export default defineComponent({
       return this.$store.state.panels_new[this.panelId].state.files;
     },
   },
-  mounted() {},
+  mounted() { },
+  provide() {
+    return {
+      panel: this.panel
+    }
+  }
 });
 </script>
 

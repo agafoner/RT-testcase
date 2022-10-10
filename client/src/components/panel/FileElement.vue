@@ -1,26 +1,24 @@
 <template>
-<div class="element inline"
-     :class="{selected : isSelected}"
-     @dblclick="$emit('chDir',normalizedName, row.type)"
-     @click="this.$store.state.panels_new[panelId].toggleSelected(row,panelId)"
->
-  <div class="element-icon">
-    {{ '-' }}
+  <div class="element inLine" :class="{selected : isSelected}" @dblclick="$emit('chDir',normalizedName, row.type)"
+    @click="toggleSelected">
+    <div class="element-icon">
+      --
+    </div>
+    <div class="element-name">
+      {{normalizedName}}
+    </div>
+    <div class="element-date">
+      {{row.lastDateChange}}
+    </div>
+    <div class="element-size">
+      {{row.size}}
+    </div>
   </div>
-  <div class="element-name">
-    {{normalizedName}}
-  </div>
-  <div class="element-date">
-    {{row.lastDateChange}}
-  </div>
-  <div class="element-size">
-    {{row.size}}
-  </div>
-</div>
 </template>
 
 <script lang="ts">
-import {defineComponent} from "vue";
+import { IFilesUI, PanelModel } from "@/store";
+import { defineComponent } from "vue";
 
 
 export default defineComponent({
@@ -28,33 +26,29 @@ export default defineComponent({
   // emits: {
   //   chDir: null
   // },
+  inject: ['panel'],
+  data() {
+    return {
+      injPanel: this.panel as unknown as PanelModel
+    }
+  },
   props: {
     row: {
       type: Object,
       required: true,
-    },
-      panelId: {
-        type: Number,
-        required: true,
-      },
-  },
-  mounted () {
-  },
-  // methods: {
-  //   toggleSelected(row,panelId): void {
-  //     this.row.toggleSelected(row,panelId)
-  //     // this.row.isSelected=!this.row.isSelected
-  //   },
-  // },
-  data() {
-    return {
     }
   },
-  computed:  {
+  methods: {
+    toggleSelected(): void {
+      this.injPanel.toggleSelected(this.row as IFilesUI);
+    }
+
+  },
+  computed: {
     normalizedName(): string {
-      return this.row.name.replaceAll('\\','/')
+      return this.row.name.replaceAll('\\', '/')
     },
-    isSelected(): boolean{
+    isSelected(): boolean {
       return this.row.isSelected
     }
   },
@@ -65,26 +59,31 @@ export default defineComponent({
 div {
   border-style: none;
 }
-.element{
+
+.element {
   border-style: solid;
   display: flex;
   height: 20px;
-  margin:auto;
+  margin: auto;
 }
-.selected{
+
+.selected {
   background-color: darkgrey;
 }
+
 .element-icon {
   width: 10%;
 }
+
 .element-name {
   width: 35%;
 }
+
 .element-date {
   width: 40%;
 }
+
 .element-size {
   width: 15%;
 }
-
 </style>

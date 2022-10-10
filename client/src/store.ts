@@ -3,21 +3,12 @@ import axios, { Axios } from "axios";
 import { FileModel, FolderModel } from "./main";
 
 interface IUi {
-  isSelected?: boolean
-  // toggleSelected?(): void
+  isSelected?: boolean;
 }
 
 export interface IUiFileModel extends FileModel, IUi {}
 export interface IUiFolderModel extends FolderModel, IUi {}
-interface IFilesUI extends Array<IUiFileModel | IUiFolderModel> {
-}
-// abstract class FilesUI implements IUi{
-//   isSelected: boolean =false
-//   toggleSelected() : void {
-//     this.isSelected=false
-//   }
-//
-// }
+export type IFilesUI = IUiFileModel | IUiFolderModel;
 
 const apiUrls = { dirList: "dirList", diskPart: "diskPart" };
 
@@ -57,37 +48,37 @@ export class PanelModel {
       })
       .then((data) => {
         this.state.files = data;
-        this.state.history=[];
+        this.state.history = [];
       });
   }
-  changeDirectory(path: string) {  // Открывает новую папку
+  changeHistory(path: string) {
+    // Открывает новую папку
     if (!!path) {
       this.state.history.push(path);
     } else {
       this.state.history.pop();
     }
-    console.log(this.state.history)
+    console.log(this.state.history);
     this.api
-    .get<Array<IFilesUI>>(
-        apiUrls.dirList + "?path=" + this.state.selectedStorage + this.state.history.join('')
-    )
-        .then((resp)=> {
-      return resp.data;
-    }).then((data)=>{
-      this.state.files=data;
-    })
+      .get<Array<IFilesUI>>(
+        apiUrls.dirList +
+          "?path=" +
+          this.state.selectedStorage +
+          this.state.history.join("")
+      )
+      .then((resp) => {
+        return resp.data;
+      })
+      .then((data) => {
+        this.state.files = data;
+      });
   }
   getPrevPath() {
     if (!this.state.history.length) return
     return this.state.history.slice(0,-1).join('')
   }
-  toggleSelected(file: IFilesUI,panelId: number) {
-    state.unsetActivePanel(panelId);
-    this.state.isActive=true;
-    const index: number =this.state.files.indexOf(file);
-    const obj=this.state.files[index];
-    console.log(this.state.files[index])
-
+  toggleSelected(row: IFilesUI): void {
+    row.isSelected = !row.isSelected;
   }
 }
 
