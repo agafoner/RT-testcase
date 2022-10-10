@@ -1,11 +1,11 @@
 <template>
-<div class="element inLine"
+<div class="element inline"
      :class="{selected : isSelected}"
      @dblclick="$emit('chDir',normalizedName, row.type)"
-     @click="toggleSelected"
+     @click="this.$store.state.panels_new[panelId].toggleSelected(row,panelId)"
 >
   <div class="element-icon">
-    --
+    {{ '-' }}
   </div>
   <div class="element-name">
     {{normalizedName}}
@@ -32,15 +32,20 @@ export default defineComponent({
     row: {
       type: Object,
       required: true,
-    }
+    },
+      panelId: {
+        type: Number,
+        required: true,
+      },
   },
-  methods: {
-    toggleSelected(): void {
-      this.row.isSelected=!this.row.isSelected
-      console.log(this.$store.state.panels_new[0].state.files);
-    }
-
+  mounted () {
   },
+  // methods: {
+  //   toggleSelected(row,panelId): void {
+  //     this.row.toggleSelected(row,panelId)
+  //     // this.row.isSelected=!this.row.isSelected
+  //   },
+  // },
   data() {
     return {
     }
@@ -52,7 +57,7 @@ export default defineComponent({
     isSelected(): boolean{
       return this.row.isSelected
     }
-  }
+  },
 })
 </script>
 

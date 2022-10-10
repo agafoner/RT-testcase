@@ -3,12 +3,21 @@ import axios, { Axios } from "axios";
 import { FileModel, FolderModel } from "./main";
 
 interface IUi {
-  isSelected?: boolean;
+  isSelected?: boolean
+  // toggleSelected?(): void
 }
 
 export interface IUiFileModel extends FileModel, IUi {}
 export interface IUiFolderModel extends FolderModel, IUi {}
-interface IFilesUI extends Array<IUiFileModel | IUiFolderModel> {}
+interface IFilesUI extends Array<IUiFileModel | IUiFolderModel> {
+}
+// abstract class FilesUI implements IUi{
+//   isSelected: boolean =false
+//   toggleSelected() : void {
+//     this.isSelected=false
+//   }
+//
+// }
 
 const apiUrls = { dirList: "dirList", diskPart: "diskPart" };
 
@@ -24,25 +33,24 @@ class PanelState {
   isActive: boolean = false;
   history: Array<string> = [];
   files: Array<IFilesUI> = [];
-  selectedStore: string = "";
+  selectedStorage: string = "";
 }
 
 export class PanelModel {
   state = reactive(new PanelState());
 
-  constructor(public api: Axios, store: string) {
-    this.setSelectedStore(store);
+  constructor(public api: Axios, storage: string) {
+    this.setSelectedStorage(storage);
   }
-
-  setSelectedStore(store: string) {
+  setSelectedStorage(store: string) {
     // debugger;
-    this.state.selectedStore = store;
+    this.state.selectedStorage = store;
     if (!store) {
       return;
     }
     this.api
       .get<Array<IFilesUI>>(
-        apiUrls.dirList + "?path=" + this.state.selectedStore
+        apiUrls.dirList + "?path=" + this.state.selectedStorage
       )
       .then((resp) => {
         return resp.data;
@@ -52,7 +60,7 @@ export class PanelModel {
         this.state.history=[];
       });
   }
-  changeHistory(path: string) {  // Открывает новую папку
+  changeDirectory(path: string) {  // Открывает новую папку
     if (!!path) {
       this.state.history.push(path);
     } else {
@@ -61,13 +69,25 @@ export class PanelModel {
     console.log(this.state.history)
     this.api
     .get<Array<IFilesUI>>(
-        apiUrls.dirList + "?path=" + this.state.selectedStore + this.state.history.join('')
+        apiUrls.dirList + "?path=" + this.state.selectedStorage + this.state.history.join('')
     )
         .then((resp)=> {
       return resp.data;
     }).then((data)=>{
       this.state.files=data;
     })
+  }
+  getPrevPath() {
+    if (!this.state.history.length) return
+    return this.state.history.slice(0,-1).join('')
+  }
+  toggleSelected(file: IFilesUI,panelId: number) {
+    state.unsetActivePanel(panelId);
+    this.state.isActive=true;
+    const index: number =this.state.files.indexOf(file);
+    const obj=this.state.files[index];
+    console.log(this.state.files[index])
+
   }
 }
 
@@ -78,15 +98,12 @@ interface Store {
   panels: number[];
   diskPart: string[];
   panels_new: Array<PanelModel>;
-  /**
-   * получить список дисков
-   */
   fetchDiskPart(): Promise<Array<string>>;
   fetchDirList(dir: string, panel: number): void;
-  callCurrentDir(): void;
   changeDisk(disk: string, panel: number): void;
   init(): void;
   initPanel(index: number): void;
+  unsetActivePanel(panelId: number): void;
 }
 
 export const state = reactive<Store>({
@@ -130,7 +147,6 @@ export const state = reactive<Store>({
 
     console.log("state.currentDir[panel] = dir;", dir);
   },
-  callCurrentDir: function () {},
   init() {
     this.fetchDiskPart().then(() => {
       this.panels.forEach(this.initPanel.bind(this));
@@ -139,6 +155,10 @@ export const state = reactive<Store>({
   initPanel() {
     this.panels_new.push(reactive(new PanelModel(api, this.diskPart[0])));
   },
+  unsetActivePanel(panelId: number): void {
+    this.panels_new.forEach(p=>p.state.isActive=false)
+  }
+
 });
 
 export default {

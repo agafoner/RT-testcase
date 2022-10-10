@@ -1,4 +1,7 @@
 <template>
+  <modal :show="showModal">
+    <button class="button" @click="showModal=false"> X</button>
+  </modal>
   <TopBar class="bar"></TopBar>
   <div class="panel-div">
     <Panel v-for="(item, index) in $store.state.panels_new" :panelId="index">
@@ -11,6 +14,7 @@
 import TopBar from "./components/TopBar.vue";
 import Panel from "./components/Panel.vue";
 import BottomBar from "./components/BottomBar.vue";
+import Modal from "./components/UI/Modal.vue"
 import { defineComponent } from "vue";
 
 export default defineComponent({
@@ -19,6 +23,7 @@ export default defineComponent({
     TopBar,
     Panel,
     BottomBar,
+    Modal
   },
   mounted() {
     this.$store.state.init();

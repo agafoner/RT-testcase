@@ -1,7 +1,7 @@
 <template>
   <div class="panel-bar inline">
     <select
-      v-model="panel.state.selectedStore"
+      v-model="panel.state.selectedStorage"
       @change="changePartition($event.target.value)"
     >
       <option v-for="partition in $store.state.diskPart">
@@ -32,14 +32,14 @@ export default defineComponent({
   },
   computed: {
     pathNormalized(): string  {
-      return this.panel.state.selectedStore+this.panel.state.history.join('')
+      return this.panel.state.selectedStorage+this.panel.state.history.join('')
     },
   },
   mounted() {
   },
   methods: {
     changePartition(value: string) {
-      this.panel.setSelectedStore(value);
+      this.panel.setSelectedStorage(value);
     },
   },
 });

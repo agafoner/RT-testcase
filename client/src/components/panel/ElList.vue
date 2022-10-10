@@ -1,14 +1,15 @@
 <template>
   <div class="el-List">
-    <div v-if="panel.state.history.length!==0"
+    <div v-if="!!panel.state.history.length"
          class="inline"
          @dblclick="selectDir(undefined,'folder')"
     >
-      {{" <= Назад  " + upperPath}}
+      {{" <= Назад  " + panel.getPrevPath()}}
     </div>
     <FileElement
       v-for="row in dirList"
       :row="row"
+      :panelId="panelId"
       @chDir="selectDir"
     ></FileElement>
   </div>
@@ -38,18 +39,10 @@ export default defineComponent({
   methods: {
     selectDir: function (folderName: string, clickedObjType: string) {
       if (clickedObjType !== "folder") return;
-      this.panel.changeHistory(folderName);
+      this.panel.changeDirectory(folderName);
     },
-    // toggleSelect: function (row: Object) {
-    //   row.isSelected=!row.isSelected;
-    // }
   },
   computed: {
-    upperPath(): string{
-      let history = this.panel.state.history.slice(0)
-      history.pop()
-      return this.panel.state.selectedStore+history.join('')
-    },
   },
 });
 </script>
