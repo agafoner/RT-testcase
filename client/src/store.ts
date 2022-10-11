@@ -84,6 +84,7 @@ export class PanelModel {
     this.setActivePanel();
   }
   setActivePanel() {
+    // TODO: удали.
     state.unsetActivePanel();
     this.state.isActive = true;
   }
@@ -91,7 +92,7 @@ export class PanelModel {
     return this.state.files.filter((f) => f.isSelected);
   }
   getFullPathFromPanel() {
-    return [this.state.selectedStorage, this.state.history.join("")].join();
+    return [this.state.selectedStorage, this.state.history.join("")].join("");
   }
 }
 
@@ -114,7 +115,7 @@ interface Store {
   getDestinationFolder(): string;
   setTransferData(transferData: IFileTransfer): void;
   transfer(): void;
-  copyFiles(): Promise<void>;
+  copyFiles(): Promise<void | string>;
 }
 
 export interface IFileTransfer {
@@ -232,9 +233,24 @@ export const state = reactive<Store>({
         throw "Нет выбранных файлов";
       }
       const targetPanel = this.panels_new.find((p) => !p.state.isActive);
-      return api.post("URL для копирования", {
-        files: copyFileUrls,
-        targetPath: targetPanel?.getFullPathFromPanel(),
+      // ты должен примерно так написать
+      // return api
+      //   .post("API для копирования", {
+      //     files: copyFileUrls,
+      //     targetPath: targetPanel?.getFullPathFromPanel(),
+      //   })
+      //   .then((responce) => {
+      //     targetPanel?.changeDirectory(targetPanel.getFullPathFromPanel());
+      //     return;
+      //   });
+      // это для проверки
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve("та-дам");
+        }, 2000);
+      }).then(() => {
+        debugger;
+        targetPanel?.setSelectedStorage(targetPanel.getFullPathFromPanel());
       });
     });
   },
