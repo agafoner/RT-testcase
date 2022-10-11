@@ -1,7 +1,7 @@
 <template>
   <div class="bar bottom-bar inLine">
     <button class="button" @click="copy">Copy</button>
-    <button class="button">Remove</button>
+    <button class="button">Move</button>
     <button class="button">Delete</button>
   </div>
   <modal :show="transferModalShow" :text="transferModalText"> </modal>
@@ -33,9 +33,7 @@ export default defineComponent({
           this.transferModalShow = false;
         });
     },
-    // submitTransfer() {
-    //   this.$store.state.transfer();
-    // },
+
   },
 });
 </script>

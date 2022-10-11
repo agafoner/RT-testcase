@@ -5,6 +5,5 @@ import {FileModel,FolderModel,IFileTransfer} from '../../api/src/model/FileSyste
 export {FileModel,FolderModel,IFileTransfer};
 
 const app = createApp(App)
-// app.provide("store", store)
 app.config.globalProperties.$store=store
 app.mount('#app')

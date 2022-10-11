@@ -23,9 +23,6 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "Element",
-  // emits: {
-  //   chDir: null
-  // },
   inject: ['panel'],
   data() {
     return {

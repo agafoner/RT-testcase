@@ -64,37 +64,6 @@ export class AppFileSystemService {
       })
       .filter((file) => file != null);
   }
-  getDirListNew(targetPath: string[]): Array<FileModel | FolderModel> {
-    const dir = path.win32.normalize(targetPath.join("/") || "C:/");
-    let files = [];
-
-    try {
-      files = fs.readdirSync(dir);
-    } catch {
-      return;
-    }
-
-    return files
-      .map((file) => {
-        let filePath = dir + path.sep + file;
-        let name = file;
-        let stat;
-        try {
-          stat = fs.statSync(filePath);
-        } catch {
-          return;
-        }
-        let date = stat.ctime;
-        if (stat.isDirectory()) {
-          name = name + path.sep;
-          return new Folder(name, date);
-        } else {
-          let size = stat.size | 0;
-          return new File(name, date, size);
-        }
-      })
-      .filter((file) => file != null);
-  }
 
   getDiskPart() {
     const buffer = childProcess
@@ -108,17 +77,13 @@ export class AppFileSystemService {
   }
   copyFiles(body: IFileTransfer) {
       let errors=[]
-      console.log(body.sourcePath ,body.files)
       body.files
           .forEach(f=>{
               const target=path.win32.normalize(body.sourcePath as string)+path.win32.normalize(f as string)
-              console.log(target)
               const destination=path.win32.normalize(body.targetPath as string)+path.win32.normalize(f as string)
               try {
                   fs.copySync(target,destination)
-                  console.log('Success copy', target)
               } catch (err) {
-                  console.log(err)
                   errors.push(err)
               }
       })

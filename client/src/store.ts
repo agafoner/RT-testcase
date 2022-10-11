@@ -1,7 +1,6 @@
 import { reactive } from "vue";
 import axios, { Axios } from "axios";
-// import { FileModel, FolderModel,IFileTransfer } from "./main";
-import { FileModel, FolderModel} from "./main";
+import { FileModel, FolderModel, IFileTransfer} from "./main";
 
 interface IUi {
   isSelected?: boolean;
@@ -35,14 +34,13 @@ export class PanelModel {
     this.setSelectedStorage(storage);
   }
   setSelectedStorage(storage: string) {
-    // debugger;
     this.state.selectedStorage = storage;
     if (!storage) {
       return;
     }
     this.api
       .get<Array<IFilesUI>>(
-        apiUrls.dirList + "?path=" + this.state.selectedStorage
+        apiUrls.dirList ,{params: {path: this.state.selectedStorage}}
       )
       .then((resp) => {
         return resp.data;
@@ -50,33 +48,29 @@ export class PanelModel {
       .then((data) => {
         this.state.files = data;
         this.state.history = [];
-        this.setActivePanel()
       });
   }
   changeDirectory(path: string,) {
-    // Открывает новую папку
-    if(path!=='==fullpath') {
       if (!!path) {
         this.state.history.push(path);
       } else {
         this.state.history.pop();
       }
-    }
-    console.log(this.state.history);
+    this.refreshDirectory()
+
+  }
+  refreshDirectory() {
     this.api
-      .get<Array<IFilesUI>>(
-        apiUrls.dirList +
-          "?path=" +
-          this.state.selectedStorage +
-          this.state.history.join("")
-      )
-      .then((resp) => {
-        return resp.data;
-      })
-      .then((data) => {
-        this.state.files = data;
-        this.setActivePanel()
-      });
+        .get<Array<IFilesUI>>(
+            apiUrls.dirList,{params: {path: [this.state.selectedStorage,this.state.history.join("")].join('')}}
+
+        )
+        .then((resp) => {
+          return resp.data;
+        })
+        .then((data) => {
+          this.state.files = data;
+        });
   }
   getPrevPath() {
     if (!this.state.history.length) return;
@@ -87,8 +81,7 @@ export class PanelModel {
     this.setActivePanel();
   }
   setActivePanel() {
-    // TODO: удали.
-    state.unsetActivePanel();
+    state.panels_new.forEach((p) => (p.state.isActive = false));
     this.state.isActive = true;
   }
   getSelectedFiles() {
@@ -108,23 +101,10 @@ interface Store {
   panels_new: Array<PanelModel>;
   transferData?: IFileTransfer;
   fetchDiskPart(): Promise<Array<string>>;
-  fetchDirList(dir: string, panel: number): void;
-  changeDisk(disk: string, panel: number): void;
   init(): void;
   initPanel(index: number): void;
-  unsetActivePanel(): void;
-  // getSelectedFiles(): string[];
-  // copyButtonCheck(): Object;
   getDestinationFolder(): string;
-  // setTransferData(transferData: IFileTransfer): void;
-  // transfer(): void;
   copyFiles(): Promise<void | string>;
-}
-
-export interface IFileTransfer {
-  files: string[];
-  destination: string;
-  method?: string;
 }
 
 export const state = reactive<Store>({
@@ -149,25 +129,6 @@ export const state = reactive<Store>({
       })
       .catch((e) => console.log("Error fetchDiskPart" + e));
   },
-  changeDisk: function (disk, panel) {
-    state.currentDir[panel] = [];
-    this.fetchDirList(disk, panel);
-  },
-  fetchDirList: function (dir: string, panel: number) {
-    if (!this.currentDir[panel]) {
-      state.currentDir[panel] = [dir];
-    } else {
-      state.currentDir[panel].push(dir);
-    }
-    api
-      .get(state.endPoint.dirList + "?path=" + this.currentDir[panel].join("/"))
-      .then((response) => {
-        this.dirList[panel] = response.data;
-      })
-      .catch((e) => console.log("Error fetchDirList" + e));
-
-    console.log("state.currentDir[panel] = dir;", dir);
-  },
   init() {
     this.fetchDiskPart().then(() => {
       this.panels.forEach(this.initPanel.bind(this));
@@ -175,9 +136,6 @@ export const state = reactive<Store>({
   },
   initPanel() {
     this.panels_new.push(reactive(new PanelModel(api, this.diskPart[0])));
-  },
-  unsetActivePanel() {
-    this.panels_new.forEach((p) => (p.state.isActive = false));
   },
   getDestinationFolder() {
     const inactivePanel =
@@ -202,13 +160,13 @@ export const state = reactive<Store>({
       const targetPanel = this.panels_new.find((p) => !p.state.isActive);
       // ты должен примерно так написать
       return api
-      .post(this.endPoint.copy, {
+      .post(this.endPoint.copy, <IFileTransfer>{
           files: copyFileNames,
           sourcePath: sourcePath,
           targetPath: targetPanel?.getFullPathFromPanel(),
-        })
-        .then((responce) => {
-          targetPanel?.changeDirectory('==fullpath');
+        } )
+        .then(() => {
+          targetPanel?.refreshDirectory();
           return;
         });
     });
