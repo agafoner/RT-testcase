@@ -96,13 +96,26 @@ interface Store {
   panels: number[];
   diskPart: string[];
   panels_new: Array<PanelModel>;
+  transferData?: IFileTransfer;
   fetchDiskPart(): Promise<Array<string>>;
   fetchDirList(dir: string, panel: number): void;
   changeDisk(disk: string, panel: number): void;
   init(): void;
   initPanel(index: number): void;
   unsetActivePanel(): void;
+  getSelectedFiles(): string[];
+  copyButtonCheck(): Object;
+  getDestinationFolder(): string;
+  setTransferData(transferData :IFileTransfer): void;
+  transfer() : void;
+
 }
+export interface IFileTransfer {
+  files: string[];
+  destination: string;
+  method?: string
+}
+
 
 export const state = reactive<Store>({
   currentDir: [], //TODO: Вот  с этими данными проблема. При запуске приложения туда записывается путь, начиная с диска
@@ -114,34 +127,33 @@ export const state = reactive<Store>({
   panels: [0, 1],
   diskPart: [],
   panels_new: [],
+
   fetchDiskPart() {
     return api
-      .get(this.endPoint.diskPart)
-      .then((response) => {
-        let diskPart: string[] = response.data;
-        this.diskPart = diskPart.map((el) => el + "/");
-        return response.data;
-      })
-      .catch((e) => console.log("Error fetchDiskPart" + e));
+        .get(this.endPoint.diskPart)
+        .then((response) => {
+          let diskPart: string[] = response.data;
+          this.diskPart = diskPart.map((el) => el + "/");
+          return response.data;
+        })
+        .catch((e) => console.log("Error fetchDiskPart" + e));
   },
   changeDisk: function (disk, panel) {
     state.currentDir[panel] = [];
     this.fetchDirList(disk, panel);
   },
   fetchDirList: function (dir: string, panel: number) {
-    console.log("state.currentDir[panel]", state.currentDir[panel]);
     if (!this.currentDir[panel]) {
       state.currentDir[panel] = [dir];
     } else {
-      console.log(state.currentDir[panel]);
       state.currentDir[panel].push(dir);
     }
     api
-      .get(state.endPoint.dirList + "?path=" + this.currentDir[panel].join("/"))
-      .then((response) => {
-        this.dirList[panel] = response.data;
-      })
-      .catch((e) => console.log("Error fetchDirList" + e));
+        .get(state.endPoint.dirList + "?path=" + this.currentDir[panel].join("/"))
+        .then((response) => {
+          this.dirList[panel] = response.data;
+        })
+        .catch((e) => console.log("Error fetchDirList" + e));
 
     console.log("state.currentDir[panel] = dir;", dir);
   },
@@ -153,10 +165,39 @@ export const state = reactive<Store>({
   initPanel() {
     this.panels_new.push(reactive(new PanelModel(api, this.diskPart[0])));
   },
-  unsetActivePanel(): void {
-    this.panels_new.forEach(p=>p.state.isActive=false)
+  unsetActivePanel() {
+    this.panels_new.forEach(p => p.state.isActive = false)
+  },
+  getSelectedFiles() {
+    const activePanel = this.panels_new[this.panels_new.findIndex(p => (p.state.isActive == true))];
+    console.log(activePanel);
+    //TODO: просортировать массив
+    let filesToCopy = activePanel.state.files
+        .map(e => {
+          if (e.isSelected == true) return e.name
+        })
+        .filter(e => !!e) as string[]
+    filesToCopy = filesToCopy.map(e => (activePanel.state.selectedStorage + activePanel.state.history.join('') + e))
+    console.log(filesToCopy)
+    return filesToCopy
+  },
+  getDestinationFolder() {
+    const inactivePanel = this.panels_new[this.panels_new.findIndex(p => (p.state.isActive == false))];
+    return inactivePanel.state.selectedStorage + inactivePanel.state.history.join('')
+  },
+  copyButtonCheck() {
+    const files = this.getSelectedFiles();
+    console.log(this.getDestinationFolder())
+    return {files: files, destination: this.getDestinationFolder(), method: ''} as IFileTransfer
+  },
+  setTransferData(transferData: IFileTransfer) {
+    this.transferData = transferData
+  },
+  transfer() {
+    if (this.transferData?.method == 'copy') console.log('Start Copy', this.transferData) //TODO: обращение к api
+    delete this.transferData;
+    console.log(this.transferData)
   }
-
 });
 
 export default {

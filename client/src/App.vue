@@ -1,13 +1,10 @@
 <template>
-  <modal :show="showModal">
-    <button class="button" @click="showModal=false"> X</button>
-  </modal>
   <TopBar class="bar"></TopBar>
   <div class="panel-div">
     <Panel v-for="(item, index) in $store.state.panels_new" :panelId="index">
     </Panel>
   </div>
-  <BottomBar class="bar"></BottomBar>
+  <BottomBar></BottomBar>
 </template>
 
 <script lang="ts">

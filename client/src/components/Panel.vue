@@ -51,6 +51,6 @@ export default defineComponent({
   flex-direction: column;
 }
 .panel-active {
-  background: lightgray;
+  background: #e7e7e7;
 }
 </style>
