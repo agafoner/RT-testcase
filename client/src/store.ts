@@ -49,7 +49,7 @@ export class PanelModel {
       .then((data) => {
         this.state.files = data;
         this.state.history = [];
-        this.setActivePanel()
+        this.setActivePanel();
       });
   }
   changeDirectory(path: string) {
@@ -72,20 +72,27 @@ export class PanelModel {
       })
       .then((data) => {
         this.state.files = data;
-        this.setActivePanel()
+        this.setActivePanel();
       });
   }
   getPrevPath() {
-    if (!this.state.history.length) return
-    return this.state.history.slice(0,-1).join('')
+    if (!this.state.history.length) return;
+    return this.state.history.slice(0, -1).join("");
   }
   toggleSelected(row: IFilesUI): void {
     row.isSelected = !row.isSelected;
-    this.setActivePanel()
+    this.setActivePanel();
   }
   setActivePanel() {
-    state.unsetActivePanel()
-    this.state.isActive=true;
+    // TODO: удали.
+    state.unsetActivePanel();
+    this.state.isActive = true;
+  }
+  getSelectedFiles() {
+    return this.state.files.filter((f) => f.isSelected);
+  }
+  getFullPathFromPanel() {
+    return [this.state.selectedStorage, this.state.history.join("")].join("");
   }
 }
 
@@ -106,16 +113,16 @@ interface Store {
   getSelectedFiles(): string[];
   copyButtonCheck(): Object;
   getDestinationFolder(): string;
-  setTransferData(transferData :IFileTransfer): void;
-  transfer() : void;
-
+  setTransferData(transferData: IFileTransfer): void;
+  transfer(): void;
+  copyFiles(): Promise<void | string>;
 }
+
 export interface IFileTransfer {
   files: string[];
   destination: string;
-  method?: string
+  method?: string;
 }
-
 
 export const state = reactive<Store>({
   currentDir: [], //TODO: Вот  с этими данными проблема. При запуске приложения туда записывается путь, начиная с диска
@@ -130,13 +137,13 @@ export const state = reactive<Store>({
 
   fetchDiskPart() {
     return api
-        .get(this.endPoint.diskPart)
-        .then((response) => {
-          let diskPart: string[] = response.data;
-          this.diskPart = diskPart.map((el) => el + "/");
-          return response.data;
-        })
-        .catch((e) => console.log("Error fetchDiskPart" + e));
+      .get(this.endPoint.diskPart)
+      .then((response) => {
+        let diskPart: string[] = response.data;
+        this.diskPart = diskPart.map((el) => el + "/");
+        return response.data;
+      })
+      .catch((e) => console.log("Error fetchDiskPart" + e));
   },
   changeDisk: function (disk, panel) {
     state.currentDir[panel] = [];
@@ -149,11 +156,11 @@ export const state = reactive<Store>({
       state.currentDir[panel].push(dir);
     }
     api
-        .get(state.endPoint.dirList + "?path=" + this.currentDir[panel].join("/"))
-        .then((response) => {
-          this.dirList[panel] = response.data;
-        })
-        .catch((e) => console.log("Error fetchDirList" + e));
+      .get(state.endPoint.dirList + "?path=" + this.currentDir[panel].join("/"))
+      .then((response) => {
+        this.dirList[panel] = response.data;
+      })
+      .catch((e) => console.log("Error fetchDirList" + e));
 
     console.log("state.currentDir[panel] = dir;", dir);
   },
@@ -166,38 +173,87 @@ export const state = reactive<Store>({
     this.panels_new.push(reactive(new PanelModel(api, this.diskPart[0])));
   },
   unsetActivePanel() {
-    this.panels_new.forEach(p => p.state.isActive = false)
+    this.panels_new.forEach((p) => (p.state.isActive = false));
   },
   getSelectedFiles() {
-    const activePanel = this.panels_new[this.panels_new.findIndex(p => (p.state.isActive))];
+    const activePanel =
+      this.panels_new[this.panels_new.findIndex((p) => p.state.isActive)];
     console.log(activePanel);
     //TODO: просортировать массив
     let filesToCopy = activePanel.state.files
-        .map(e => {
-          if (e.isSelected == true) return e.name
-        })
-        .filter(e => !!e) as string[]
-    filesToCopy = filesToCopy.map(e => (activePanel.state.selectedStorage + activePanel.state.history.join('') + e))
-    console.log(filesToCopy)
-    return filesToCopy
+      .map((e) => {
+        if (e.isSelected == true) return e.name;
+      })
+      .filter((e) => !!e) as string[];
+    filesToCopy = filesToCopy.map(
+      (e) =>
+        activePanel.state.selectedStorage +
+        activePanel.state.history.join("") +
+        e
+    );
+    console.log(filesToCopy);
+    return filesToCopy;
   },
   getDestinationFolder() {
-    const inactivePanel = this.panels_new[this.panels_new.findIndex(p => (!p.state.isActive))];
-    return inactivePanel.state.selectedStorage + inactivePanel.state.history.join('')
+    const inactivePanel =
+      this.panels_new[this.panels_new.findIndex((p) => !p.state.isActive)];
+    return (
+      inactivePanel.state.selectedStorage + inactivePanel.state.history.join("")
+    );
   },
   copyButtonCheck() {
     const files = this.getSelectedFiles();
-    console.log(this.getDestinationFolder())
-    return {files: files, destination: this.getDestinationFolder(), method: ''} as IFileTransfer
+    console.log(this.getDestinationFolder());
+    return {
+      files: files,
+      destination: this.getDestinationFolder(),
+      method: "",
+    } as IFileTransfer;
   },
   setTransferData(transferData: IFileTransfer) {
-    this.transferData = transferData
+    this.transferData = transferData;
   },
   transfer() {
-    if (this.transferData?.method == 'copy') console.log('Start Copy', this.transferData) //TODO: обращение к api
+    if (this.transferData?.method == "copy")
+      console.log("Start Copy", this.transferData); //TODO: обращение к api
     delete this.transferData;
-    console.log(this.transferData)
-  }
+    console.log(this.transferData);
+  },
+  copyFiles() {
+    return Promise.resolve().then(() => {
+      const activePanel = this.panels_new.find((p) => p.state.isActive);
+      if (!activePanel) {
+        throw "Нет активной панели";
+      }
+      const sourcePath = activePanel.getFullPathFromPanel();
+      const copyFileUrls = activePanel
+        .getSelectedFiles()
+        .map((f) => [sourcePath, f.name].join());
+      if (!copyFileUrls.length) {
+        throw "Нет выбранных файлов";
+      }
+      const targetPanel = this.panels_new.find((p) => !p.state.isActive);
+      // ты должен примерно так написать
+      // return api
+      //   .post("API для копирования", {
+      //     files: copyFileUrls,
+      //     targetPath: targetPanel?.getFullPathFromPanel(),
+      //   })
+      //   .then((responce) => {
+      //     targetPanel?.changeDirectory(targetPanel.getFullPathFromPanel());
+      //     return;
+      //   });
+      // это для проверки
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve("та-дам");
+        }, 2000);
+      }).then(() => {
+        debugger;
+        targetPanel?.setSelectedStorage(targetPanel.getFullPathFromPanel());
+      });
+    });
+  },
 });
 
 export default {
