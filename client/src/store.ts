@@ -169,7 +169,7 @@ export const state = reactive<Store>({
     this.panels_new.forEach(p => p.state.isActive = false)
   },
   getSelectedFiles() {
-    const activePanel = this.panels_new[this.panels_new.findIndex(p => (p.state.isActive == true))];
+    const activePanel = this.panels_new[this.panels_new.findIndex(p => (p.state.isActive))];
     console.log(activePanel);
     //TODO: просортировать массив
     let filesToCopy = activePanel.state.files
@@ -182,7 +182,7 @@ export const state = reactive<Store>({
     return filesToCopy
   },
   getDestinationFolder() {
-    const inactivePanel = this.panels_new[this.panels_new.findIndex(p => (p.state.isActive == false))];
+    const inactivePanel = this.panels_new[this.panels_new.findIndex(p => (!p.state.isActive))];
     return inactivePanel.state.selectedStorage + inactivePanel.state.history.join('')
   },
   copyButtonCheck() {
