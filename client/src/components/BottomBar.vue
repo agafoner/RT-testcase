@@ -33,9 +33,9 @@ export default defineComponent({
           this.transferModalShow = false;
         });
     },
-    submitTransfer() {
-      this.$store.state.transfer();
-    },
+    // submitTransfer() {
+    //   this.$store.state.transfer();
+    // },
   },
 });
 </script>
