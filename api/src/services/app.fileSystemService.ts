@@ -1,12 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import {
-  EtypeItem,
-  FileModel,
-  FolderModel,
-  BaseModel,
+    EtypeItem,
+    FileModel,
+    FolderModel,
+    BaseModel, IFileTransfer,
 } from "../model/FileSystemModel";
+import {normalizePath} from "@nestjs/common/utils/shared.utils";
 
-const fs = require("fs");
+const fs = require("fs-extra");
 const path = require("path");
 const childProcess = require("child_process");
 
@@ -106,4 +107,25 @@ export class AppFileSystemService {
       .map((e) => e.split("="))
       .map((e) => e[1]);
   }
+  copyFiles(body: IFileTransfer) {
+      let errors=[]
+      body.files
+          .forEach(e=>{
+              const target=e.path.normalize()+e.file.normalize()
+              console.log(target)
+              const destination=body.destination.normalize()+e.file.normalize()
+              try {
+                  fs.copySync(target,destination)
+                  console.log('Success copy', target)
+              } catch (err) {
+                  console.log(err)
+                  errors.push(err)
+              }
+      })
+      if (!errors.length) {
+          return {status: 'Ok'}}
+      else {
+          return {status: 'Error', errors: errors}
+      }}
+
 }

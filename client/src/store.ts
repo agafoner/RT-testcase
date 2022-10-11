@@ -11,7 +11,7 @@ export interface IUiFileModel extends FileModel, IUi {}
 export interface IUiFolderModel extends FolderModel, IUi {}
 export type IFilesUI = IUiFileModel | IUiFolderModel;
 
-const apiUrls = { dirList: "dirList", diskPart: "diskPart" };
+const apiUrls = { dirList: "dirList", diskPart: "diskPart",copy: "copy" };
 
 const api = axios.create({
   baseURL: "http://127.0.0.1:5000/api/",
@@ -176,25 +176,6 @@ export const state = reactive<Store>({
   unsetActivePanel() {
     this.panels_new.forEach((p) => (p.state.isActive = false));
   },
-  // getSelectedFiles() {
-  //   const activePanel =
-  //     this.panels_new[this.panels_new.findIndex((p) => p.state.isActive)];
-  //   console.log(activePanel);
-  //
-  //   let filesToCopy = activePanel.state.files
-  //     .map((e) => {
-  //       if (e.isSelected == true) return e.name;
-  //     })
-  //     .filter((e) => !!e) as string[];
-  //   filesToCopy = filesToCopy.map(
-  //     (e) =>
-  //       activePanel.state.selectedStorage +
-  //       activePanel.state.history.join("") +
-  //       e
-  //   );
-  //   console.log(filesToCopy);
-  //   return filesToCopy;
-  // },
   getDestinationFolder() {
     const inactivePanel =
       this.panels_new[this.panels_new.findIndex((p) => !p.state.isActive)];
@@ -202,24 +183,6 @@ export const state = reactive<Store>({
       inactivePanel.state.selectedStorage + inactivePanel.state.history.join("")
     );
   },
-  // copyButtonCheck() {
-  //   const files = this.getSelectedFiles();
-  //   console.log(this.getDestinationFolder());
-  //   return {
-  //     files: files,
-  //     destination: this.getDestinationFolder(),
-  //     method: "",
-  //   } as IFileTransfer;
-  // },
-  // setTransferData(transferData: IFileTransfer) {
-  //   this.transferData = transferData;
-  // },
-  // transfer() {
-  //   if (this.transferData?.method == "copy")
-  //     console.log("Start Copy", this.transferData); //TODO: обращение к api
-  //   delete this.transferData;
-  //   console.log(this.transferData);
-  // },
   copyFiles() {
     return Promise.resolve().then(() => {
       const activePanel = this.panels_new.find((p) => p.state.isActive);
@@ -227,32 +190,35 @@ export const state = reactive<Store>({
         throw "Нет активной панели";
       }
       const sourcePath = activePanel.getFullPathFromPanel();
-      const copyFileUrls = activePanel
-        .getSelectedFiles()
-        .map((f) => [sourcePath, f.name].join());
-      if (!copyFileUrls.length) {
+      const copyFileNames = activePanel
+        .getSelectedFiles();
+        // .map((f) => [sourcePath, f.name].join());
+      if (!copyFileNames.length) {
         throw "Нет выбранных файлов";
       }
       const targetPanel = this.panels_new.find((p) => !p.state.isActive);
       // ты должен примерно так написать
-      // return api
-      //   .post("API для копирования", {
-      //     files: copyFileUrls,
-      //     targetPath: targetPanel?.getFullPathFromPanel(),
-      //   })
-      //   .then((responce) => {
-      //     targetPanel?.changeDirectory(targetPanel.getFullPathFromPanel());
-      //     return;
-      //   });
+      return api
+      .post("API для копирования", {
+          files: copyFileNames,
+          sourcePath: sourcePath,
+          targetPath: targetPanel?.getFullPathFromPanel(),
+        })
+        .then((responce) => {
+          targetPanel?.changeDirectory(targetPanel.getFullPathFromPanel());
+          return;
+        });
+
+
       // это для проверки
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          resolve("та-дам");
-        }, 2000);
-      }).then(() => {
-        debugger;
-        targetPanel?.setSelectedStorage(targetPanel.getFullPathFromPanel());
-      });
+      // return new Promise((resolve, reject) => {
+      //   setTimeout(() => {
+      //     resolve("та-дам");
+      //   }, 2000);
+      // }).then(() => {
+      //   debugger;
+      //   targetPanel?.setSelectedStorage(targetPanel.getFullPathFromPanel());
+      // });
     });
   },
 });
