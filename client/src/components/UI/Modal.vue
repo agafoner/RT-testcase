@@ -1,40 +1,35 @@
 <template>
-  <div class="modal" v-if="show" @click="show=false">
+  <div class="modal" v-if="show">
     <div @click.stop class="modal-content">
       <slot>
-        {{text}}
+        {{ text }}
       </slot>
-      <button @click="submitButton">Подтвердить</button>
     </div>
-
   </div>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   name: "Modal",
   props: {
     show: {
       type: Boolean,
-      default: false
+      default: false,
     },
     text: {
-      type: String
+      type: String,
     },
-    submitButton: {
-      type: Function
-    }
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
 .modal {
-  top:0;
+  top: 0;
   bottom: 0;
   right: 0;
   left: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   position: fixed;
   display: flex;
   flex-direction: column;
@@ -49,11 +44,10 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-
 }
-button{
+button {
   min-height: 30px;
   max-width: 100px;
-  margin: 20px
+  margin: 20px;
 }
 </style>
