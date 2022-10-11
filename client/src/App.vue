@@ -1,32 +1,31 @@
 <template>
   <TopBar class="bar"></TopBar>
   <div class="panel-div">
-    <Panel v-for="panel in panels" :panelId=panel > </Panel>
+    <Panel v-for="(item, index) in $store.state.panels_new" :panelId="index">
+    </Panel>
   </div>
-  <BottomBar class="bar"></BottomBar>
+  <BottomBar></BottomBar>
 </template>
 
 <script lang="ts">
-import TopBar from './components/TopBar.vue';
-import Panel from './components/Panel.vue';
-import BottomBar from './components/BottomBar.vue';
-import {defineComponent} from "vue";
+import TopBar from "./components/TopBar.vue";
+import Panel from "./components/Panel.vue";
+import BottomBar from "./components/BottomBar.vue";
+import Modal from "./components/UI/Modal.vue"
+import { defineComponent } from "vue";
 
-
-export default defineComponent ({
+export default defineComponent({
   name: "App",
   components: {
-    TopBar,Panel,BottomBar
+    TopBar,
+    Panel,
+    BottomBar,
+    Modal
   },
-  data() {
-    return {
-      panels: [0,1]
-    }
+  mounted() {
+    this.$store.state.init();
   },
-  mounted () {
-
-  }
-})
+});
 // export default class App extends Vue {}
 </script>
 
@@ -65,9 +64,9 @@ div {
   align-items: stretch;
   align-content: center;
 }
-.bar{
-  width:70%;
-  margin:auto;
+.bar {
+  width: 70%;
+  margin: auto;
   height: 60px;
   display: flex;
   justify-content: left;

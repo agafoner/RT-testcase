@@ -1,28 +1,59 @@
 <template>
-<div class="panelBar">
-  <select>
-    <option v-for="partition in $store.state.diskPart">{{partition}}</option>
-  </select>
-  <label>C://Windows</label>
-</div>
+  <div class="panel-bar inline">
+    <select
+      v-model="panel.state.selectedStorage"
+      @change="changePartition($event.target.value)"
+    >
+      <option v-for="partition in $store.state.diskPart">
+        {{ partition }}
+      </option>
+    </select>
+    <label >{{
+        pathNormalized
+    }}</label>
+  </div>
 </template>
 
 <script lang="ts">
-import {defineComponent} from "vue";
-import app from "@/App.vue";
+import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "PanelBar",
+  props: {
+    panelId: {
+      type: Number,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      panel: this.$store.state.panels_new[this.panelId],
+    };
+  },
+  computed: {
+    pathNormalized(): string  {
+      return this.panel.state.selectedStorage+this.panel.state.history.join('')
+    },
+  },
   mounted() {
-    this.$store.state.getDiskPart();  //TODO: вот здесь ошибка
-
-  }
-
-})
+  },
+  methods: {
+    changePartition(value: string) {
+      this.panel.setSelectedStorage(value);
+    },
+  },
+});
 </script>
 
 <style scoped>
-.panelBar{
+.panel-bar {
+  display: flex;
   height: 30px;
+}
+select {
+  max-width: 50px;
+}
+label {
+  width: 90%;
 }
 </style>

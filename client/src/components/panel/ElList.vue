@@ -1,26 +1,50 @@
 <template>
-<div class="el-List">
-  <FileElement v-for="file in files" :fileData="file"></FileElement>
-</div>
+  <div class="el-List">
+    <div v-if="!!panel.state.history.length"
+         class="inline"
+         @dblclick="selectDir(undefined,'folder')"
+    >
+      {{" <= Назад  " + panel.getPrevPath()}}
+    </div>
+    <FileElement
+      v-for="row in dirList"
+      :row="row"
+      :panelId="panelId"
+      @chDir="selectDir"
+    ></FileElement>
+  </div>
 </template>
-
 <script lang="ts">
 import FileElement from "@/components/panel/FileElement.vue";
-import {defineComponent} from "vue";
-
+import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "ElList",
-  components: {FileElement},
-  data() {
-    return {
-      files: [
-        {name:'file.jpg', size:111, date:1111},
-        {name:'file2.jpg', size:1113, date:1112},
-        {name:'file3.jpg', size:1211, date:11121}]
-    }
-  }
-})
+  components: { FileElement },
+  props: {
+    panelId: {
+      type: Number,
+      required: true,
+    },
+    dirList: {
+      required: true,
+    },
+  },
+      data() {
+        return {
+          panel: this.$store.state.panels_new[this.panelId],
+        };
+      },
+
+  methods: {
+    selectDir: function (folderName: string, clickedObjType: string) {
+      if (clickedObjType !== "folder") return;
+      this.panel.changeDirectory(folderName);
+    },
+  },
+  computed: {
+  },
+});
 </script>
 
 <style scoped>
