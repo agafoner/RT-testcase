@@ -53,12 +53,14 @@ export class PanelModel {
         this.setActivePanel()
       });
   }
-  changeDirectory(path: string) {
+  changeDirectory(path: string,) {
     // Открывает новую папку
-    if (!!path) {
-      this.state.history.push(path);
-    } else {
-      this.state.history.pop();
+    if(path!=='==fullpath') {
+      if (!!path) {
+        this.state.history.push(path);
+      } else {
+        this.state.history.pop();
+      }
     }
     console.log(this.state.history);
     this.api
@@ -98,7 +100,7 @@ export class PanelModel {
 }
 
 interface Store {
-  endPoint: { dirList: string; diskPart: string };
+  endPoint: { dirList: string, diskPart:string, copy: string};
   currentDir: Array<string[]>;
   dirList: Array<FileModel | FolderModel>[];
   panels: number[];
@@ -130,6 +132,7 @@ export const state = reactive<Store>({
   endPoint: {
     dirList: "dirList",
     diskPart: "diskPart",
+    copy: "copy"
   },
   dirList: [],
   panels: [0, 1],
@@ -191,34 +194,23 @@ export const state = reactive<Store>({
       }
       const sourcePath = activePanel.getFullPathFromPanel();
       const copyFileNames = activePanel
-        .getSelectedFiles();
-        // .map((f) => [sourcePath, f.name].join());
+        .getSelectedFiles()
+          .map((f) => f.name);
       if (!copyFileNames.length) {
         throw "Нет выбранных файлов";
       }
       const targetPanel = this.panels_new.find((p) => !p.state.isActive);
       // ты должен примерно так написать
       return api
-      .post("API для копирования", {
+      .post(this.endPoint.copy, {
           files: copyFileNames,
           sourcePath: sourcePath,
           targetPath: targetPanel?.getFullPathFromPanel(),
         })
         .then((responce) => {
-          targetPanel?.changeDirectory(targetPanel.getFullPathFromPanel());
+          targetPanel?.changeDirectory('==fullpath');
           return;
         });
-
-
-      // это для проверки
-      // return new Promise((resolve, reject) => {
-      //   setTimeout(() => {
-      //     resolve("та-дам");
-      //   }, 2000);
-      // }).then(() => {
-      //   debugger;
-      //   targetPanel?.setSelectedStorage(targetPanel.getFullPathFromPanel());
-      // });
     });
   },
 });

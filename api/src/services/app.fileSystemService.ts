@@ -5,7 +5,6 @@ import {
     FolderModel,
     BaseModel, IFileTransfer,
 } from "../model/FileSystemModel";
-import {normalizePath} from "@nestjs/common/utils/shared.utils";
 
 const fs = require("fs-extra");
 const path = require("path");
@@ -109,11 +108,12 @@ export class AppFileSystemService {
   }
   copyFiles(body: IFileTransfer) {
       let errors=[]
+      console.log(body.sourcePath ,body.files)
       body.files
-          .forEach(e=>{
-              const target=e.path.normalize()+e.file.normalize()
+          .forEach(f=>{
+              const target=path.win32.normalize(body.sourcePath as string)+path.win32.normalize(f as string)
               console.log(target)
-              const destination=body.destination.normalize()+e.file.normalize()
+              const destination=path.win32.normalize(body.targetPath as string)+path.win32.normalize(f as string)
               try {
                   fs.copySync(target,destination)
                   console.log('Success copy', target)
