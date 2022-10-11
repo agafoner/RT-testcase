@@ -1,5 +1,6 @@
 import {Body, Controller, Get, Post, Query} from "@nestjs/common";
 import {AppFileSystemService} from "./services/app.fileSystemService";
+import {IFileTransfer} from "./model/FileSystemModel";
 
 
 @Controller('/api')
@@ -12,11 +13,11 @@ export class AppController{
     };
 
     @Get('/dirList')
-    getDirList(@Query() query) {
-        return this.appFileSystemService.getDirList(query['path'])
+    getDirList(@Query('path') path: string) {
+        return this.appFileSystemService.getDirList(path)
     }
     @Post('/copy')
-    copy(@Body() body) {
+    copy(@Body() body: IFileTransfer) {
         return this.appFileSystemService.copyFiles(body)
     }
 
