@@ -110,7 +110,6 @@ export class AppFileSystemService {
         this.actionWithFiles(body,fs.moveSync)
     }
     deleteFiles(body) {
-      console.log('Delete start', body)
         this.actionWithFiles(body,fs.removeSync)
     }
 }

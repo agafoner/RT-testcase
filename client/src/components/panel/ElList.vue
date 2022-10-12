@@ -42,8 +42,6 @@ export default defineComponent({
       this.panel.changeDirectory(folderName);
     },
   },
-  computed: {
-  },
 });
 </script>
 
@@ -51,5 +49,6 @@ export default defineComponent({
 .el-List {
   padding: 10px;
   flex-grow: 1;
+  overflow: auto;
 }
 </style>

@@ -4,7 +4,7 @@
     <Panel v-for="(item, index) in $store.state.panels_new" :panelId="index">
     </Panel>
   </div>
-  <BottomBar></BottomBar>
+  <BottomBar class="bar"></BottomBar>
 </template>
 
 <script lang="ts">
@@ -13,6 +13,7 @@ import Panel from "./components/Panel.vue";
 import BottomBar from "./components/BottomBar.vue";
 import Modal from "./components/UI/Modal.vue"
 import { defineComponent } from "vue";
+import FileIcon from "@/components/panel/FileElement/FileIcon.vue";
 
 export default defineComponent({
   name: "App",
@@ -20,7 +21,8 @@ export default defineComponent({
     TopBar,
     Panel,
     BottomBar,
-    Modal
+    Modal,
+    FileIcon
   },
   mounted() {
     this.$store.state.init();
@@ -44,6 +46,7 @@ export default defineComponent({
   //justify-content: space-around;
 }
 .panel-div {
+  height: 80%;
   display: flex;
   flex-grow: 1;
   flex-wrap: wrap;

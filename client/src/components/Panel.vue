@@ -28,9 +28,6 @@ export default defineComponent({
     files() {
       return this.$store.state.panels_new[this.panelId].state.files;
     },
-    isPanelActive() {
-      return this.panel.state.isActive
-    }
   },
   mounted() { },
   provide() {

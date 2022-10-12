@@ -2,7 +2,7 @@
   <div class="element inLine" :class="{selected : isSelected}" @dblclick="$emit('chDir',normalizedName, row.type)"
     @click="toggleSelected">
     <div class="element-icon">
-      --
+      <FileIcon :row="row"></FileIcon>
     </div>
     <div class="element-name">
       {{normalizedName}}
@@ -19,10 +19,12 @@
 <script lang="ts">
 import { IFilesUI, PanelModel } from "@/store";
 import { defineComponent } from "vue";
+import FileIcon from "@/components/panel/FileElement/FileIcon.vue";
 
 
 export default defineComponent({
   name: "Element",
+  components: {FileIcon},
   inject: ['panel'],
   data() {
     return {
@@ -73,10 +75,12 @@ div {
 }
 
 .element-name {
+  overflow:hidden;
   width: 35%;
 }
 
 .element-date {
+  overflow:hidden;
   width: 40%;
 }
 
