@@ -1,15 +1,17 @@
 <template>
-<div>
-  <img class="icon" v-if="row.type=='folder'" src="@/assets/icons/folder.png" />
-  <img class="icon" v-else-if="icons.hasOwnProperty(fileType)" :src="iconFullPath" /> <!-- TODO: Проблема с путём -->
-  <img class="icon" v-else src="@/assets/icons/file.png" />
-</div>
+  <div>
+    <img class="icon" :src="iconFullPath" />
+  </div>
 </template>
 
 <script lang="ts">
-import {defineComponent} from "vue";
+import { IFilesUI } from "@/store";
+import { defineComponent } from "vue";
+import { EtypeItem } from "../../../../../api/src/model/FileSystemModel";
 
-export default defineComponent ({
+const assetPath = "/icons/";
+
+export default defineComponent({
   name: "FileIcon",
   props: {
     row: {
@@ -17,29 +19,33 @@ export default defineComponent ({
       required: true,
     },
   },
-    data() {
-      return {
-        icons:<{[index:string]:any}> {
-          'exe':'icon-exe.png',
-          'jpg': 'icon-exe.png'
-        }
-      }
-    },
-    computed: {
-      fileType(): string {
-          return this.row.name.split('.').slice(-1)
+  setup() {
+    return {
+      icons: <Record<string, string>>{
+        exe: assetPath + "icon-exe.png",
+        jpg: assetPath + "icon-exe.png",
       },
-      iconFullPath(): string{
-        const icon: string =this.fileType
-        return "@/assets/icons/"+this.icons[icon]
+      defaultIcon: assetPath + "file.png",
+      folderIcon: assetPath + "folder.png",
+    };
+  },
+  computed: {
+    fileType(): string {
+      return this.row.name.split(".").slice(-1);
+    },
+    iconFullPath(): string {
+      if ((this.row as IFilesUI).type === EtypeItem.folder) {
+        return this.folderIcon;
       }
-    }
-
-})
-</script >
+      const icon = this.fileType;
+      return this.icons[icon] || this.defaultIcon;
+    },
+  },
+});
+</script>
 
 <style scoped>
-.icon{
+.icon {
   height: 18px;
 }
 </style>
