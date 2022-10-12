@@ -18,5 +18,5 @@ export interface FolderModel extends BaseModel<EtypeItem.folder> {
 export interface IFileTransfer {
     files: string[];
     sourcePath: string;
-    targetPath: string;
+    targetPath?: string;
 }

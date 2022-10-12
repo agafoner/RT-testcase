@@ -5,7 +5,11 @@ import { FileModel, FolderModel, IFileTransfer} from "./main";
 interface IUi {
   isSelected?: boolean;
 }
-
+enum EtypeAction {
+  copy = "copy",
+  move = "move",
+  delete = 'remove'
+}
 export interface IUiFileModel extends FileModel, IUi {}
 export interface IUiFolderModel extends FolderModel, IUi {}
 export type IFilesUI = IUiFileModel | IUiFolderModel;
@@ -104,7 +108,10 @@ interface Store {
   init(): void;
   initPanel(index: number): void;
   getDestinationFolder(): string;
+  actionWithFiles(act : EtypeAction): Promise <void>  ;
   copyFiles(): Promise<void | string>;
+  moveFiles(): Promise <void | string>
+  deleteFiles() : Promise<void | string>
 }
 
 export const state = reactive<Store>({
@@ -144,33 +151,67 @@ export const state = reactive<Store>({
       inactivePanel.state.selectedStorage + inactivePanel.state.history.join("")
     );
   },
-  copyFiles() {
-    return Promise.resolve().then(() => {
-      const activePanel = this.panels_new.find((p) => p.state.isActive);
-      if (!activePanel) {
-        throw "Нет активной панели";
-      }
-      const sourcePath = activePanel.getFullPathFromPanel();
-      const copyFileNames = activePanel
-        .getSelectedFiles()
-          .map((f) => f.name);
-      if (!copyFileNames.length) {
-        throw "Нет выбранных файлов";
-      }
-      const targetPanel = this.panels_new.find((p) => !p.state.isActive);
-      // ты должен примерно так написать
-      return api
-      .post(this.endPoint.copy, <IFileTransfer>{
-          files: copyFileNames,
-          sourcePath: sourcePath,
-          targetPath: targetPanel?.getFullPathFromPanel(),
-        } )
-        .then(() => {
-          targetPanel?.refreshDirectory();
-          return;
-        });
-    });
+  // copyFiles() {
+  //   return Promise.resolve().then(() => {
+  //     const activePanel = this.panels_new.find((p) => p.state.isActive);
+  //     if (!activePanel) {
+  //       throw "Нет активной панели";
+  //     }
+  //     const sourcePath = activePanel.getFullPathFromPanel();
+  //     const copyFileNames = activePanel
+  //         .getSelectedFiles()
+  //         .map((f) => f.name);
+  //     if (!copyFileNames.length) {
+  //       throw "Нет выбранных файлов";
+  //     }
+  //     const targetPanel = this.panels_new.find((p) => !p.state.isActive);
+  //     // ты должен примерно так написать
+  //     return api
+  //         .post(this.endPoint.copy, <IFileTransfer>{
+  //           files: copyFileNames,
+  //           sourcePath: sourcePath,
+  //           targetPath: targetPanel?.getFullPathFromPanel(),
+  //         } )
+  //         .then(() => {
+  //           targetPanel?.refreshDirectory();
+  //           return;
+  //         });
+  //   });
+  // },
+  actionWithFiles(act: EtypeAction) {
+        const activePanel = this.panels_new.find((p) => p.state.isActive);
+        if (!activePanel) {
+          throw "Нет активной панели";
+        }
+        const sourcePath = activePanel.getFullPathFromPanel();
+        const copyFileNames = activePanel
+            .getSelectedFiles()
+            .map((f) => f.name);
+        if (!copyFileNames.length) {
+          throw "Нет выбранных файлов";
+        }
+        const targetPanel = this.panels_new.find((p) => !p.state.isActive);
+        return api
+            .post(act, <IFileTransfer>{
+              files: copyFileNames,
+              sourcePath: sourcePath,
+              targetPath: targetPanel?.getFullPathFromPanel(),
+            } )
+            .then(() => {
+              act!==EtypeAction.copy ? activePanel.refreshDirectory() : undefined
+              targetPanel?.refreshDirectory();
+              return;
+            });
   },
+  copyFiles() {
+    return Promise.resolve().then(() => this.actionWithFiles(EtypeAction.copy))
+  },
+  moveFiles() {
+    return Promise.resolve().then(()=> this.actionWithFiles(EtypeAction.move))
+  },
+  deleteFiles() {
+    return Promise.resolve().then(()=> this.actionWithFiles(EtypeAction.delete))
+  }
 });
 
 export default {
