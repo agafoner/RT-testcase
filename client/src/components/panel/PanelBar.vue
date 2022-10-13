@@ -8,9 +8,9 @@
         {{ partition }}
       </option>
     </select>
-    <label >{{
-        pathNormalized
-    }}</label>
+    <label>
+      {{pathNormalized}}
+    </label>
   </div>
 </template>
 
@@ -48,12 +48,18 @@ export default defineComponent({
 <style scoped>
 .panel-bar {
   display: flex;
+  align-items: center;
+  align-content: center;
   height: 30px;
+  justify-content: left;
+  padding-right: 20px;
+  padding-left: 20px;
+
 }
 select {
   max-width: 50px;
 }
 label {
-  width: 90%;
+  padding-left: 10px;
 }
 </style>
