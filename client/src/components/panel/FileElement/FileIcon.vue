@@ -23,7 +23,10 @@ export default defineComponent({
     return {
       icons: <Record<string, string>>{
         exe: assetPath + "icon-exe.png",
-        jpg: assetPath + "icon-exe.png",
+        jpg: assetPath + "img.png",
+        png: assetPath + "img.png",
+        gif: assetPath + "img.png",
+        bmp: assetPath + "img.png",
       },
       defaultIcon: assetPath + "file.png",
       folderIcon: assetPath + "folder.png",

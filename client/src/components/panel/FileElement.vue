@@ -11,7 +11,7 @@
       {{row.lastDateChange}}
     </div>
     <div class="element-size">
-      {{row.size}}
+      {{row.type==='file'? normalizedSize : ''}}
     </div>
   </div>
 </template>
@@ -49,6 +49,37 @@ export default defineComponent({
     },
     isSelected(): boolean {
       return this.row.isSelected
+    },
+    normalizedSize(): string{
+      let s1: number=this.row.size
+      if (!s1) return '0 b'
+      let s2=0
+      let digit=0;
+      while (s1>1024 && digit<5) {
+        digit++
+        s2=s1%1024
+        s1=(s1-s2)/1024
+
+      }
+      // const addition=(s2/1024).toFixed(3)*1000
+      const addition=Math.round(s2/1024*100)
+      switch (digit) {
+        case 0:
+          return s1+' b';
+        case 1:
+          return s1+','+addition+' Kb';
+        case 2:
+          return s1+','+addition+' Mb';
+        case 3:
+          return s1+','+addition+' Gb';
+        case 4:
+          return s1+','+addition+' Tb';
+        case 5:
+          return s1+','+addition+' Pb';
+        default:
+          return '-'
+      }
+
     }
   },
 })
