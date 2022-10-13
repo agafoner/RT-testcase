@@ -54,7 +54,6 @@ export default defineComponent({
   justify-content: left;
   padding-right: 20px;
   padding-left: 20px;
-
 }
 select {
   max-width: 50px;

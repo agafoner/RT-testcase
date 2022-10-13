@@ -35,7 +35,7 @@ export default defineComponent({
       this.settingsModalShow=true;
     },
     changeDateModel() {
-      this.$store.state.setDateModel(this.dateModel)
+      this.$store.state.setSettingsDateModel(this.dateModel)
     }
   }
 })
