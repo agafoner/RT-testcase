@@ -14,7 +14,7 @@ abstract class ABase<T extends EtypeItem> implements BaseModel<T> {
   constructor(
     public type: T,
     public name: string,
-    public lastDateChange: Date
+    public lastDateChange: number
   ) {}
 }
 
@@ -53,7 +53,7 @@ export class AppFileSystemService {
         } catch {
           return;
         }
-        let date = stat.ctime;
+        let date = Date.parse(stat.ctime);
         if (stat.isDirectory()) {
           name = name + path.sep;
           return new Folder(name, date);

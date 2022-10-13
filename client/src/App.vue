@@ -14,6 +14,7 @@ import BottomBar from "./components/BottomBar.vue";
 import Modal from "./components/UI/Modal.vue"
 import { defineComponent } from "vue";
 import FileIcon from "@/components/panel/FileElement/FileIcon.vue";
+import SettingsModal from "@/components/UI/SettingsModal.vue";
 
 export default defineComponent({
   name: "App",
@@ -22,7 +23,8 @@ export default defineComponent({
     Panel,
     BottomBar,
     Modal,
-    FileIcon
+    FileIcon,
+    SettingsModal
   },
   mounted() {
     this.$store.state.init();
