@@ -1,5 +1,5 @@
 <template>
-  <div class="panel" :class="{'panel-active' : panel.state.isActive}">
+  <div class="panel" :class="{'panel-active' : panel.state.isActive}" @click="panel.setActivePanel()">
     <PanelBar :panelId="panelId"> </PanelBar>
     <ElList :dirList="files" :panelId="panelId"> </ElList>
   </div>

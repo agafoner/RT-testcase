@@ -114,7 +114,7 @@ interface Store {
   copyFiles(): Promise<void | string>;
   moveFiles(): Promise <void | string>
   deleteFiles() : Promise<void | string>
-  setDateModel(model: string): void
+  setSettingsDateModel(model: string): void
 }
 
 export const state = reactive<Store>({
@@ -190,7 +190,7 @@ export const state = reactive<Store>({
   deleteFiles() {
     return Promise.resolve().then(()=> this.actionWithFiles(EtypeAction.delete))
   },
-  setDateModel(model) {
+  setSettingsDateModel(model) {
     this.activeDateModel=model
   }
 });
