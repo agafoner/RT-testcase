@@ -14,7 +14,7 @@ abstract class ABase<T extends EtypeItem> implements BaseModel<T> {
   constructor(
     public type: T,
     public name: string,
-    public lastDateChange: Date
+    public lastDateChange: number
   ) {}
 }
 
@@ -53,7 +53,7 @@ export class AppFileSystemService {
         } catch {
           return;
         }
-        let date = stat.ctime;
+        let date = Date.parse(stat.ctime);
         if (stat.isDirectory()) {
           name = name + path.sep;
           return new Folder(name, date);
@@ -75,22 +75,41 @@ export class AppFileSystemService {
       .map((e) => e.split("="))
       .map((e) => e[1]);
   }
-  copyFiles(body: IFileTransfer) {
+  actionWithFiles(body: IFileTransfer, func: Function) {
       let errors=[]
       body.files
           .forEach(f=>{
               const target=path.win32.normalize(body.sourcePath as string)+path.win32.normalize(f as string)
-              const destination=path.win32.normalize(body.targetPath as string)+path.win32.normalize(f as string)
-              try {
-                  fs.copySync(target,destination)
-              } catch (err) {
-                  errors.push(err)
+              let destination
+              if (func!==fs.removeSync) {
+                  destination = path.win32.normalize(body.targetPath as string) + path.win32.normalize(f as string)
+                  try {
+                      func(target, destination)
+                  } catch (err) {
+                      errors.push(err)
+                  }
+              } else {
+                  try {
+                      func(target)
+                  } catch (err) {
+                      errors.push(err)
+                  }
               }
+
+
       })
       if (!errors.length) {
           return {status: 'Ok'}}
       else {
           return {status: 'Error', errors: errors}
       }}
-
+    copyFiles(body) {
+        this.actionWithFiles(body,fs.copySync)
+    }
+    moveFiles(body) {
+        this.actionWithFiles(body,fs.moveSync)
+    }
+    deleteFiles(body) {
+        this.actionWithFiles(body,fs.removeSync)
+    }
 }

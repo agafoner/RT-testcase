@@ -1,7 +1,7 @@
 <template>
   <div class="el-List">
     <div v-if="!!panel.state.history.length"
-         class="inline"
+         class="element inline upper-dir"
          @dblclick="selectDir(undefined,'folder')"
     >
       {{" <= Назад  " + panel.getPrevPath()}}
@@ -42,14 +42,14 @@ export default defineComponent({
       this.panel.changeDirectory(folderName);
     },
   },
-  computed: {
-  },
 });
 </script>
 
 <style scoped>
 .el-List {
-  padding: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
   flex-grow: 1;
+  overflow: auto;
 }
 </style>

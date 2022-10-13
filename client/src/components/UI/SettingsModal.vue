@@ -1,7 +1,10 @@
 <template>
-  <div class="modal" v-if="show">
+  <div class="modal" v-if="show" @click="hideModal">
     <div @click.stop class="modal-content">
+      <button class="close-button" @click="hideModal">X</button>
+      <h2>
         {{ text }}
+      </h2>
       <slot>
       </slot>
     </div>
@@ -9,8 +12,10 @@
 </template>
 
 <script lang="ts">
-export default {
-  name: "Modal",
+import {defineComponent} from "vue";
+
+export default defineComponent ({
+  name: "SettingsModal",
   props: {
     show: {
       type: Boolean,
@@ -20,7 +25,12 @@ export default {
       type: String,
     },
   },
-};
+  methods: {
+    hideModal() {
+      this.$emit('update:show',false)
+    }
+  }
+});
 </script>
 
 <style scoped>
@@ -39,15 +49,21 @@ export default {
   background: white;
   border-radius: 12px;
   min-width: 300px;
-  min-height: 50px;
+  min-height: 200px;
   padding: 20px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
+  position: relative;
 }
 button {
   min-height: 30px;
   max-width: 100px;
   margin: 20px;
+}
+.close-button{
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 </style>

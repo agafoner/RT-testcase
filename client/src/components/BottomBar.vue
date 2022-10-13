@@ -1,8 +1,8 @@
 <template>
   <div class="bar bottom-bar inLine">
     <button class="button" @click="copy">Copy</button>
-    <button class="button">Move</button>
-    <button class="button">Delete</button>
+    <button class="button" @click="move">Move</button>
+    <button class="button" @click="remove">Delete</button>
   </div>
   <modal :show="transferModalShow" :text="transferModalText"> </modal>
 </template>
@@ -33,6 +33,26 @@ export default defineComponent({
           this.transferModalShow = false;
         });
     },
+    move() {
+      this.transferModalText = `Переносим файлы`;
+      this.transferModalShow = true;
+      this.$store.state
+          .moveFiles()
+          .catch(console.error)
+          .finally(() => {
+            this.transferModalShow = false;
+          });
+    },
+    remove() {
+      this.transferModalText = `Удаляем файлы`;
+      this.transferModalShow = true;
+      this.$store.state
+          .deleteFiles()
+          .catch(console.error)
+          .finally(() => {
+            this.transferModalShow = false;
+          });
+    }
 
   },
 });
@@ -40,8 +60,8 @@ export default defineComponent({
 
 <style scoped>
 .bottom-bar {
-  width: 70%;
   margin: auto;
   height: 60px;
+  border-radius: 0 0 10px 10px;
 }
 </style>

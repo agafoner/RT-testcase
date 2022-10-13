@@ -20,6 +20,13 @@ export class AppController{
     copy(@Body() body: IFileTransfer) {
         return this.appFileSystemService.copyFiles(body)
     }
-
+    @Post('/move')
+    moveFiles(@Body() body: IFileTransfer) {
+        return this.appFileSystemService.moveFiles(body)
+    }
+    @Post('/remove')
+    deleteFiles(@Body() body: IFileTransfer) {
+        return this.appFileSystemService.deleteFiles(body)
+    }
 
 }

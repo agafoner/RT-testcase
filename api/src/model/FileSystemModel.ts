@@ -6,7 +6,7 @@ export enum EtypeItem {
 export interface BaseModel<T extends EtypeItem> {
     type: T;
     name: string;
-    lastDateChange: Date;
+    lastDateChange: number;
 }
 export interface FileModel extends BaseModel<EtypeItem.file> {
     size: number;
@@ -18,5 +18,5 @@ export interface FolderModel extends BaseModel<EtypeItem.folder> {
 export interface IFileTransfer {
     files: string[];
     sourcePath: string;
-    targetPath: string;
+    targetPath?: string;
 }
