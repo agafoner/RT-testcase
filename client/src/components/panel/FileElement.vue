@@ -111,17 +111,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-div {
-  border-style: none;
-}
-
-.element {
-  border-style: solid;
-  display: flex;
-  height: 20px;
-  margin: auto;
-}
-
 .selected {
   background-color: darkgrey;
 }
@@ -129,23 +118,22 @@ div {
 .element-icon {
   width: 5%;
   text-align: left;
-  padding-left: 5px
 }
 
 .element-name {
   overflow:hidden;
-  width: 40%;
+  width: 50%;
   text-align: left;
 }
 
 .element-date {
   overflow:hidden;
-  width: 35%;
+  width: 30%;
   text-align: left;
 }
 
 .element-size {
   width: 15%;
-  text-align: right;
+  text-align: center;
 }
 </style>

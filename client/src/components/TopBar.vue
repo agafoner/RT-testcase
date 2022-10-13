@@ -1,14 +1,16 @@
 <template>
-<div>
-  <button class="button" @click="openModal"> Settings</button>
-</div>
-  <SettingsModal v-model:show="settingsModalShow" text="Настройки:">
-    <label>Настройки даты:</label>
-    <select v-model="dateModel" >
-      <option v-for="model in $store.state.dateModels" > {{model}}</option>
-    </select>
-    <button @click="changeDateModel()"> Применить</button>
-  </SettingsModal>
+  <div class="bar">
+    <div>
+      <button class="button" @click="openModal"> Settings</button>
+    </div>
+    <SettingsModal v-model:show="settingsModalShow" text="Настройки:">
+      <label>Настройки даты:</label>
+      <select v-model="dateModel" >
+        <option v-for="model in $store.state.dateModels" > {{model}}</option>
+      </select>
+      <button @click="changeDateModel()"> Применить</button>
+    </SettingsModal>
+  </div>
 </template>
 
 <script lang="ts">
@@ -40,5 +42,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-
+.bar {
+  border-radius: 10px 10px 0 0;
+}
 </style>

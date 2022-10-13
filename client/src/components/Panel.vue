@@ -39,14 +39,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.panel {
-  height: 100%;
-  width: 35%;
-  min-width: 400px;
-  max-width: 800px;
-  display: flex;
-  flex-direction: column;
-}
 .panel-active {
   background: #e7e7e7;
 }

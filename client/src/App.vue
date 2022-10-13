@@ -1,12 +1,11 @@
 <template>
-  <TopBar class="bar"></TopBar>
+  <TopBar class="bar" ></TopBar>
   <div class="panel-div">
     <Panel v-for="(item, index) in $store.state.panels_new" :panelId="index">
     </Panel>
   </div>
   <BottomBar class="bar"></BottomBar>
 </template>
-
 <script lang="ts">
 import TopBar from "./components/TopBar.vue";
 import Panel from "./components/Panel.vue";
@@ -30,11 +29,11 @@ export default defineComponent({
     this.$store.state.init();
   },
 });
-// export default class App extends Vue {}
 </script>
 
 <style lang="scss">
 #app {
+  user-select: none;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -45,7 +44,6 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
 
-  //justify-content: space-around;
 }
 .panel-div {
   height: 80%;
@@ -56,12 +54,7 @@ export default defineComponent({
   align-items: stretch;
   align-content: center;
 }
-div {
-  border-color: black;
-  border-style: solid;
-  border-width: 1px;
-  border-radius: 1px;
-}
+
 .inline {
   display: flex;
   flex-wrap: wrap;
@@ -76,10 +69,46 @@ div {
   display: flex;
   justify-content: left;
   align-items: center;
+  border-color: black;
+  border-style: solid;
+  min-width: 800px;
+  max-width: 1600px;
+}
+.panel-div{
+  margin: auto;
+  width: 70%;
+  min-width: 800px;
+  max-width: 1600px;
+  display: flex;
+  border-color: black;
+  border-style: solid;
+  flex-direction: column;
+}
+.panel {
+  border-style: solid;
+  border-width: 1px;
+  height: 100%;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+}
+.element {
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 5px;
+  display: flex;
+  height: 20px;
+  margin: auto;
+  padding-left: 10px;
+  padding-right: 10px;
+
 }
 .button {
   width: 80px;
   height: 40px;
   margin-left: 60px;
+}
+.upper-dir {
+  background: lightgray;
 }
 </style>

@@ -60,8 +60,8 @@ export default defineComponent({
 
 <style scoped>
 .bottom-bar {
-  width: 70%;
   margin: auto;
   height: 60px;
+  border-radius: 0 0 10px 10px;
 }
 </style>
